@@ -5,7 +5,9 @@ Small tools should be understandable without documentation, but should include a
 ## Code conventions
 
 - TypeScript + React function components; no direct DOM manipulation for tool state.
-- Keep tools in `src/tools/<slug>` with small named functions and self-contained logic.
+- Keep tools in `src/tools/<slug>`; put pure mathematical and algorithmic logic in plain TypeScript modules, and use React for interaction, state, and rendering.
+- Register metadata and a lazy component import together in `src/data/tools.ts`. Extend the subject type, filter list, and theme for new subjects.
+- Keep simulations independent of routing and deployment configuration. Extract shared code only when it is genuinely reusable.
 - No duplicate headers, footers, or bespoke color systems; reuse `src/styles/global.css` tokens.
 - Use a proper `<label>` for controls; mouse, keyboard, and touch must all work.
 - Prefer semantic HTML and text alternatives for charts or color-driven information.
@@ -17,7 +19,7 @@ Small tools should be understandable without documentation, but should include a
 
 ## Acceptance checks
 
-Run `npm run check` and `npm run build`. In Chrome/Firefox desktop and Safari on iPad, check 768px and 1024px widths, scrolling, orientation changes, and pinch zoom. Confirm that the browser back action returns to the catalogue. Test a keyboard-only navigation path and sufficient contrast.
+Run `npm run check`, `npm test`, and `npm run build`. In Chrome/Firefox desktop and Safari on iPad, check 768px and 1024px widths, scrolling, orientation changes, and pinch zoom. Confirm that the browser back action returns to the catalogue. Test a keyboard-only navigation path and sufficient contrast.
 
 ## Ideas and review
 
