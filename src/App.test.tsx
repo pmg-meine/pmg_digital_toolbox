@@ -6,7 +6,7 @@ import App from "./App";
 import { tools } from "./data/tools";
 
 afterEach(cleanup);
-function open(path: string, base = "/pmg-digital-toolbox/") {
+function open(path: string, base = "/pmg_digital_toolbox/") {
   history.replaceState(null, "", `${base}#${path}`);
   render(
     <HashRouter>
@@ -53,7 +53,7 @@ describe("toolbox routes", () => {
     ).toBeTruthy();
   });
   it.each(tools)("opens $slug directly under a nested base", async (tool) => {
-    open(`/werkzeuge/${tool.slug}`, "/pmg-digital-toolbox/previews/pr-17/");
+    open(`/werkzeuge/${tool.slug}`, "/pmg_digital_toolbox/previews/pr-17/");
     expect(screen.getByRole("heading", { name: tool.title })).toBeTruthy();
     expect(
       await screen.findByLabelText(`${tool.title} – Interaktive Anwendung`),
