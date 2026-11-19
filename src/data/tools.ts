@@ -1,3 +1,5 @@
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+
 export type Subject = 'Physik' | 'Informatik' | 'Mathematik';
 export type Tool = {
   slug: string;
@@ -10,12 +12,14 @@ export type Tool = {
   exampleActivity: string;
   badge: string;
   icon: string;
+  component: LazyExoticComponent<ComponentType>;
 };
 
 // The catalog is the single source of truth: add an entry when adding a tool.
 export const tools: Tool[] = [
   {
     slug: 'ohmsches-gesetz',
+    component: lazy(() => import('../tools/ohmsches-gesetz/OhmsLaw')),
     title: 'Ohmsches Gesetz',
     subject: 'Physik',
     description: 'Spannung und Widerstand verändern und die Stromstärke beobachten.',
@@ -28,6 +32,7 @@ export const tools: Tool[] = [
   },
   {
     slug: 'stack-container',
+    component: lazy(() => import('../tools/stack-container/StackContainer')),
     title: 'Stack visualisieren',
     subject: 'Informatik',
     description: 'Push und Pop in einem begrenzten Stapelspeicher nachvollziehen.',
@@ -40,6 +45,7 @@ export const tools: Tool[] = [
   },
   {
     slug: 'bruchteile',
+    component: lazy(() => import('../tools/bruchteile/Fractions')),
     title: 'Bruchteile entdecken',
     subject: 'Mathematik',
     description: 'Zähler und Nenner einstellen und Bruchteile direkt vergleichen.',
