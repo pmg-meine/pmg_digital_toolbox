@@ -9,7 +9,7 @@ import tempfile
 
 ROOT = pathlib.Path.cwd()
 SITE = ROOT / "site"
-BASE = os.environ.get("TOOLBOX_ROOT", "/pmg-digital-toolbox/")
+BASE = os.environ.get("TOOLBOX_ROOT", "/pmg_digital_toolbox/")
 REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 
 

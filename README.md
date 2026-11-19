@@ -21,12 +21,12 @@ Open the local URL printed by Vite. Direct links use routes such as `/#/werkzeug
 
 ## Deployment
 
-The Pages workflow rebuilds `master` and all open same-repository pull requests into a single artifact. Each preview uses its PR number, for example `https://OWNER.github.io/pmg-digital-toolbox/previews/pr-17/`. Share that URL with colleagues after the workflow completes. A new commit updates the same URL; closing or merging the PR removes it on the next deployment. Fork PRs are excluded because their code is not trusted for public preview builds, though they can run the normal checks.
+The Pages workflow rebuilds `master` and all open same-repository pull requests into a single artifact. Each preview uses its PR number, for example `https://OWNER.github.io/pmg_digital_toolbox/previews/pr-17/`. Share that URL with colleagues after the workflow completes. A new commit updates the same URL; closing or merging the PR removes it on the next deployment. Fork PRs are excluded because their code is not trusted for public preview builds, though they can run the normal checks.
 
 The workflow builds each eligible head independently. A failed preview is reported in the workflow log and omitted; a failed stable build stops deployment. It generates `versions.json` at the site root from successful builds. The selector fetches this catalogue and preserves the hash route when switching, for example:
 
-- Stable: `https://OWNER.github.io/pmg-digital-toolbox/#/werkzeuge/ohmsches-gesetz`
-- Preview: `https://OWNER.github.io/pmg-digital-toolbox/previews/pr-17/#/werkzeuge/ohmsches-gesetz`
+- Stable: `https://OWNER.github.io/pmg_digital_toolbox/#/werkzeuge/ohmsches-gesetz`
+- Preview: `https://OWNER.github.io/pmg_digital_toolbox/previews/pr-17/#/werkzeuge/ohmsches-gesetz`
 
 A tool missing in the target version shows a link back to its catalogue. Previews show the selector automatically. On stable, tap or click **PMG Digital Toolbox** in the footer five times within three seconds to enable it. Use **Ausblenden** to hide it. The setting lasts for the current browser tab; switching from a preview to stable enables it for that tab. Preview URLs are public, and this setting is not access control.
 

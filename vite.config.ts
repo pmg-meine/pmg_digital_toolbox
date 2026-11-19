@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: process.env.DEPLOY_BASE || "/pmg-digital-toolbox/",
+  base: process.env.DEPLOY_BASE || "/pmg_digital_toolbox/",
 });

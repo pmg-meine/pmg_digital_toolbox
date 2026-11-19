@@ -5,7 +5,7 @@ export type Version = {
   basePath: string;
 };
 
-export const root = import.meta.env.VITE_TOOLBOX_ROOT || "/pmg-digital-toolbox/";
+export const root = import.meta.env.VITE_TOOLBOX_ROOT || "/pmg_digital_toolbox/";
 export const channel = import.meta.env.VITE_TOOLBOX_CHANNEL === "preview" ? "preview" : "stable";
 export const currentVersion = import.meta.env.VITE_TOOLBOX_VERSION || "main";
 export const storageKey = "pmg-digital-toolbox:developer-mode";
