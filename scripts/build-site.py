@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild Pages from main and the current eligible pull request heads."""
+"""Rebuild Pages from the default branch and current eligible pull request heads."""
 import json
 import os
 import pathlib
@@ -32,7 +32,7 @@ def main():
         ["gh", "api", "--paginate", "--slurp", f"repos/{REPOSITORY}/pulls?state=open&per_page=100"], text=True
     )
     pulls = [pull for page in json.loads(response) for pull in page]
-    versions = [{"id": "main", "label": "Stable (main)", "channel": "stable", "basePath": BASE}]
+    versions = [{"id": "main", "label": "Stable (master)", "channel": "stable", "basePath": BASE}]
     with tempfile.TemporaryDirectory() as temporary:
         for pull in sorted(pulls, key=lambda item: item["number"]):
             if pull["head"]["repo"] is None or pull["head"]["repo"]["full_name"].lower() != REPOSITORY.lower():

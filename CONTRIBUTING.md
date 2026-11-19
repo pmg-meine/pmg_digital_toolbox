@@ -23,7 +23,7 @@ Run `npm run check`, `npm test`, and `npm run build`. In Chrome/Firefox desktop 
 
 ## Ideas and review
 
-Open a GitHub issue explaining the subject, target grade, pedagogical objective, and requested interactions. A maintainer reviews educational content and usability before merging. The `main` branch auto-deploys.
+Open a GitHub issue explaining the subject, target grade, pedagogical objective, and requested interactions. A maintainer reviews educational content and usability before merging. The `master` branch auto-deploys.
 
 ## Preview deployments
 

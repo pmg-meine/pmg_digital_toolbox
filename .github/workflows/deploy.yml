@@ -1,7 +1,7 @@
 name: Build and deploy PMG Digital Toolbox
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 permissions: {}
 concurrency:
