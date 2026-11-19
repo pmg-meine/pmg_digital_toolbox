@@ -991,3 +991,31 @@ h2 {
     transform: none;
   }
 }
+
+.version-selector {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  font-size: .85rem;
+}
+.version-selector select, .version-selector button {
+  min-height: 44px;
+  max-width: 15rem;
+}
+.preview-badge {
+  padding: .2rem .5rem;
+  border-radius: .4rem;
+  background: #efe8ff;
+  color: #503198;
+  font-weight: 700;
+}
+.developer-trigger {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}

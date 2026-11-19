@@ -1,7 +1,9 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import ToolCatalogue from "./components/ToolCatalogue";
 import { tools } from "./data/tools";
+import VersionSelector from "./components/VersionSelector";
+import { channel, readDeveloperMode, saveDeveloperMode } from "./versioning/versions";
 
 function Home() {
   return (
@@ -158,6 +160,19 @@ function ToolPage() {
 
 export default function App() {
   const location = useLocation();
+  const [developerMode, setDeveloperMode] = useState(readDeveloperMode);
+  const [confirmation, setConfirmation] = useState(false);
+  const taps = useRef<number[]>([]);
+  function activateDeveloperMode() {
+    const now = Date.now();
+    taps.current = [...taps.current.filter((time) => now - time < 3000), now];
+    if (taps.current.length === 5) {
+      taps.current = [];
+      saveDeveloperMode(true);
+      setDeveloperMode(true);
+      setConfirmation(true);
+    }
+  }
   const pathname = location.pathname.replace(/\/$/, "");
   const tool = tools.find((entry) => pathname === `/werkzeuge/${entry.slug}`);
   useEffect(() => {
@@ -220,6 +235,11 @@ export default function App() {
               PMG Website <span aria-hidden="true">↗</span>
             </a>
           </nav>
+          {(channel === "preview" || developerMode) && <VersionSelector onDisable={() => {
+            saveDeveloperMode(false);
+            setDeveloperMode(false);
+            setConfirmation(false);
+          }} />}
         </div>
       </header>
       <main
@@ -237,10 +257,11 @@ export default function App() {
       <footer className="site-footer">
         <div className="footer-inner">
           <span>
-            <strong>PMG Digital Toolbox</strong> · Interaktive Werkzeuge für den
+            <button className="developer-trigger" type="button" onClick={activateDeveloperMode}><strong>PMG Digital Toolbox</strong></button> · Interaktive Werkzeuge für den
             Unterricht
           </span>
           <div>
+            {confirmation && <span role="status">Entwicklermodus aktiviert</span>}
             <Link to="/ueber">Projektinformationen</Link>
             <a
               href="https://pmg-meine.de/"
