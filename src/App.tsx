@@ -23,7 +23,6 @@ function Home() {
           anschaulichen Unterricht – direkt im Browser, ohne Anmeldung.
         </p>
         <div className="hero-tags">
-          <span>✓ Kostenlos & direkt nutzbar</span>
           <span>✓ iPad & Computer</span>
           <span>✓ Ohne Installation</span>
         </div>
