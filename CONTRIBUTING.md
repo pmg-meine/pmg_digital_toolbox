@@ -1,0 +1,24 @@
+# Contributing a classroom tool
+
+Small tools should be understandable without documentation, but should include a teaching note on the tool's page.
+
+## Code conventions
+
+- TypeScript + React function components; no direct DOM manipulation for tool state.
+- Keep tools in `src/tools/<slug>` with small named functions and self-contained logic.
+- No duplicate headers, footers, or bespoke color systems; reuse `src/styles/global.css` tokens.
+- Use a proper `<label>` for controls; mouse, keyboard, and touch must all work.
+- Prefer semantic HTML and text alternatives for charts or color-driven information.
+- Buttons and sliders should offer at least 44×44 CSS pixel targets on touchscreens.
+- Avoid services that require sending student data or persisting it off device.
+- No new runtime dependencies without justification.
+- Include title, short description, grade levels, subject, searchable tags, learning goal, and an activity suggestion.
+- Keep resource-heavy animation optional and respect `prefers-reduced-motion`.
+
+## Acceptance checks
+
+Run `npm run check` and `npm run build`. In Chrome/Firefox desktop and Safari on iPad, check 768px and 1024px widths, scrolling, orientation changes, and pinch zoom. Confirm that the browser back action returns to the catalogue. Test a keyboard-only navigation path and sufficient contrast.
+
+## Ideas and review
+
+Open a GitHub issue explaining the subject, target grade, pedagogical objective, and requested interactions. A maintainer reviews educational content and usability before merging. The `main` branch auto-deploys.

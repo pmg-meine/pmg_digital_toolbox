@@ -1,0 +1,25 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ToolCatalogue from '../components/ToolCatalogue';
+import { tools } from '../data/tools';
+---
+<SiteLayout>
+  <section class="hero">
+    <p class="eyebrow"><span class="eyebrow-dot"></span> PHILIPP MELANCHTHON GYMNASIUM MEINE</p>
+    <h1>Entdecken. Verstehen.<br/><span class="violet-text">Ausprobieren.</span></h1>
+    <p class="hero-copy">Digitale Werkzeuge und interaktive Simulationen für einen anschaulichen Unterricht – direkt im Browser, ohne Anmeldung.</p>
+    <div class="hero-tags"><span>✓ Kostenlos & direkt nutzbar</span><span>✓ iPad & Computer</span><span>✓ Ohne Installation</span></div>
+    <div class="decor-orbit" aria-hidden="true"><span>∑</span><span>⚡</span><span>&lt;/&gt;</span></div>
+  </section>
+  <section class="catalogue-section" aria-label="Werkzeugkatalog">
+    <div class="section-heading">
+      <div><p class="eyebrow">DEINE WERKZEUGKISTE</p><h2>Alle Werkzeuge <span class="count-marker">{tools.length}</span></h2></div>
+      <p>Fach auswählen oder gezielt nach einem Thema suchen.</p>
+    </div>
+    <ToolCatalogue client:load tools={tools}/>
+  </section>
+  <section class="contribute-band">
+    <div><p class="eyebrow">VON LEHRKRÄFTEN · FÜR DEN UNTERRICHT</p><h2>Eine Idee für ein neues Tool?</h2><p>Die Toolbox wächst mit guten Ideen aus dem Kollegium.</p></div>
+    <a class="primary-button" href={`${import.meta.env.BASE_URL}ueber/`}>Mitmachen <span aria-hidden="true">→</span></a>
+  </section>
+</SiteLayout>
