@@ -1,34 +1,39 @@
 name: Build and deploy PMG Digital Toolbox
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions: {}
 concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Install dependencies
-        run: npm ci
-      - name: Build site
-        run: npm run build
-      - uses: actions/configure-pages@v5
+      - name: Build stable and eligible previews
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TOOLBOX_ROOT: /pmg-digital-toolbox/
+        run: python3 scripts/build-site.py
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: dist
+          path: site
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

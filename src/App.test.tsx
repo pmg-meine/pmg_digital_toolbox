@@ -83,3 +83,38 @@ describe("toolbox routes", () => {
     expect(document.activeElement?.id).toBe("content");
   });
 });
+
+describe("developer mode", () => {
+  it("requires five taps within three seconds and can be hidden", () => {
+    sessionStorage.clear();
+    open("/");
+    const trigger = screen.getByRole("button", { name: "PMG Digital Toolbox" });
+    expect(screen.queryByLabelText("Version")).toBeNull();
+    for (let i = 0; i < 4; i++) fireEvent.click(trigger);
+    expect(screen.queryByLabelText("Version")).toBeNull();
+    fireEvent.click(trigger);
+    expect(screen.getByLabelText("Version")).toBeTruthy();
+    expect(sessionStorage.getItem("pmg-digital-toolbox:developer-mode")).toBe("enabled");
+    fireEvent.click(screen.getByRole("button", { name: "Ausblenden" }));
+    expect(screen.queryByLabelText("Version")).toBeNull();
+    sessionStorage.clear();
+  });
+});
+
+it("resets an incomplete activation sequence after three seconds", () => {
+  sessionStorage.clear();
+  let now = 1000;
+  const originalNow = Date.now;
+  Date.now = () => now;
+  try {
+    open("/");
+    const trigger = screen.getByRole("button", { name: "PMG Digital Toolbox" });
+    for (let i = 0; i < 4; i++) fireEvent.click(trigger);
+    now += 3000;
+    fireEvent.click(trigger);
+    expect(screen.queryByLabelText("Version")).toBeNull();
+  } finally {
+    Date.now = originalNow;
+    sessionStorage.clear();
+  }
+});

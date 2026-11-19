@@ -23,4 +23,8 @@ Run `npm run check`, `npm test`, and `npm run build`. In Chrome/Firefox desktop 
 
 ## Ideas and review
 
-Open a GitHub issue explaining the subject, target grade, pedagogical objective, and requested interactions. A maintainer reviews educational content and usability before merging. The `main` branch auto-deploys.
+Open a GitHub issue explaining the subject, target grade, pedagogical objective, and requested interactions. A maintainer reviews educational content and usability before merging. The `master` branch auto-deploys.
+
+## Preview deployments
+
+Open a pull request from a branch in this repository to request a public preview. See the deployment section of [README.md](README.md) for URLs, developer mode, required Pages settings, and a manual lifecycle check. Forks do not receive automatic previews. Check both stable and preview deep links when changing routing or deployment paths.
