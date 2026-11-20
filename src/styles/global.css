@@ -1072,3 +1072,95 @@ h2 {
     right: 17px;
   }
 }
+
+.theme-switch {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.theme-switch span {
+  font-size: 19px;
+  margin-right: 6px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --purple: #d5b2f4;
+  --magenta: #f19cdd;
+  --blue: #72c8f4;
+  --ink: #eee8f2;
+  --muted: #c0b5c8;
+  --border: #504557;
+  background: #18141c;
+}
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .simulation-container,
+[data-theme="dark"] .datatype-workspace {
+  background: #211b26;
+  border-color: var(--border);
+}
+[data-theme="dark"] .hero {
+  background: linear-gradient(115deg, #28202f, #392645);
+}
+[data-theme="dark"] .hero::before { background: #483353; }
+[data-theme="dark"] .hero-copy,
+[data-theme="dark"] .hero-tags,
+[data-theme="dark"] .card-meta,
+[data-theme="dark"] .card-bottom,
+[data-theme="dark"] .back-link,
+[data-theme="dark"] .quiet-button { color: var(--muted); }
+[data-theme="dark"] .count-marker,
+[data-theme="dark"] .tool-format,
+[data-theme="dark"] .formula-strip,
+[data-theme="dark"] .metric-card,
+[data-theme="dark"] .stack-display,
+[data-theme="dark"] .contribute-band,
+[data-theme="dark"] .teacher-info > div { background: #302638; }
+[data-theme="dark"] .metric-card span { color: var(--muted); }
+[data-theme="dark"] .tab,
+[data-theme="dark"] .secondary-button,
+[data-theme="dark"] .simulation-expand-button,
+[data-theme="dark"] .stack-slot,
+[data-theme="dark"] .stack-slot em,
+[data-theme="dark"] .search-box input,
+[data-theme="dark"] .sim-control-panel input[type="text"] {
+  background: #29212f;
+  color: var(--ink);
+  border-color: var(--border);
+}
+[data-theme="dark"] .tab.active,
+[data-theme="dark"] .primary-button,
+[data-theme="dark"] .cave-view-toggle input:checked + span {
+  background: #76509a;
+  border-color: #76509a;
+  color: #fff;
+}
+[data-theme="dark"] .primary-button:hover { background: #624083; }
+[data-theme="dark"] .secondary-button:hover { background: #3b3043; }
+[data-theme="dark"] .art-blue { background: #193746; color: #72c8f4; }
+[data-theme="dark"] .art-violet { background: #382947; color: #d5b2f4; }
+[data-theme="dark"] .art-green { background: #304027; color: #b8e77a; }
+[data-theme="dark"] .pill-blue { background: #193746; color: #8bd3f6; }
+[data-theme="dark"] .pill-violet { background: #493358; color: #e2bdf9; }
+[data-theme="dark"] .pill-green { background: #304027; color: #b8e77a; }
+[data-theme="dark"] .fraction-display { background: #283326; }
+[data-theme="dark"] .fraction-number,
+[data-theme="dark"] .fraction-values { color: #b8e77a; }
+[data-theme="dark"] .fraction-part { background: #211b26; }
+[data-theme="dark"] .fraction-part.active { background: var(--green); }
+[data-theme="dark"] .stack-slot.filled { background: #493358; color: var(--ink); }
+[data-theme="dark"] .chart-gridline { stroke: #504557; }
+[data-theme="dark"] .chart-tick,
+[data-theme="dark"] .chart-label { fill: #c0b5c8; }
+[data-theme="dark"] .skip-link { background: #29212f; }
+
+@media (max-width: 730px) {
+  .theme-switch { order: 1; }
+  .nav-links { order: 2; }
+}

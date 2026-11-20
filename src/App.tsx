@@ -190,6 +190,21 @@ function ToolPage() {
 export default function App() {
   const location = useLocation();
   const [developerMode, setDeveloperMode] = useState(readDeveloperMode);
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      return localStorage.getItem("pmg-digital-toolbox:theme") === "dark";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkMode ? "dark" : "light";
+    try {
+      localStorage.setItem("pmg-digital-toolbox:theme", darkMode ? "dark" : "light");
+    } catch {
+      // The theme still works for this visit when storage is unavailable.
+    }
+  }, [darkMode]);
   const [confirmation, setConfirmation] = useState(false);
   const taps = useRef<number[]>([]);
   function activateDeveloperMode() {
@@ -264,6 +279,16 @@ export default function App() {
               PMG Website <span aria-hidden="true">↗</span>
             </a>
           </nav>
+          <button
+            className="theme-switch"
+            type="button"
+            role="switch"
+            aria-checked={darkMode}
+            onClick={() => setDarkMode((current) => !current)}
+          >
+            <span aria-hidden="true">{darkMode ? "☾" : "☀"}</span>
+            Dunkelmodus
+          </button>
         </div>
       </header>
       <main
