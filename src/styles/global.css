@@ -1189,3 +1189,5 @@ h2 {
   .theme-switch { order: 1; }
   .nav-links { order: 2; }
 }
+
+[data-theme="dark"] .cave-display { background: #211b26; }
