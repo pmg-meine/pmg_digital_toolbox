@@ -141,18 +141,6 @@ function ToolPage() {
           <Simulation />
         </Suspense>
       </section>
-      <section className="teacher-info">
-        <div>
-          <span className="info-label">LERNZIEL</span>
-          <h2>Das lernen wir</h2>
-          <p>{tool.learningGoal}</p>
-        </div>
-        <div>
-          <span className="info-label">UNTERRICHTSIDEE</span>
-          <h2>Probiere es aus</h2>
-          <p>{tool.exampleActivity}</p>
-        </div>
-      </section>
     </div>
   );
 }
