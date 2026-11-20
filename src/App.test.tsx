@@ -23,6 +23,7 @@ describe("toolbox routes", () => {
     expect(tools.map((tool) => tool.slug)).toEqual([
       "lichtquellen-lokalisieren",
       "ohmsches-gesetz",
+      "hamming-code",
       "stack-container",
       "abstract-datatype-visualizer",
       "bruchteile",
