@@ -1,11 +1,14 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import App from "./App";
 import { tools } from "./data/tools";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllEnvs();
+});
 function open(path: string, base = "/pmg_digital_toolbox/") {
   history.replaceState(null, "", `${base}#${path}`);
   render(
@@ -84,6 +87,20 @@ describe("toolbox routes", () => {
     expect(location.hash).toBe("#/ueber");
     expect(document.activeElement?.id).toBe("content");
   });
+});
+
+it("shows the build time in local time and links to the commit and repository", () => {
+  const buildTime = "2026-01-02T03:04:05.000Z";
+  const buildHash = "1234567890abcdef";
+  vi.stubEnv("VITE_BUILD_TIME", buildTime);
+  vi.stubEnv("VITE_BUILD_HASH", buildHash);
+  open("/");
+
+  expect(screen.getByText(new Date(buildTime).toLocaleString()).getAttribute("datetime")).toBe(buildTime);
+  expect(screen.getByRole("link", { name: "1234567" }).getAttribute("href"))
+    .toBe(`https://github.com/pmg-meine/pmg_digital_toolbox/commit/${buildHash}`);
+  expect(screen.getByRole("link", { name: "GitHub" }).getAttribute("href"))
+    .toBe("https://github.com/pmg-meine/pmg_digital_toolbox");
 });
 
 describe("developer mode", () => {

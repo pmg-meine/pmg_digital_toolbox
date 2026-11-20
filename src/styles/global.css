@@ -528,9 +528,14 @@ h2 {
 .footer-inner strong {
   color: var(--purple);
 }
-.footer-links {
+.footer-links,
+.build-info {
   display: flex;
-  gap: 22px;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.footer-inner {
+  flex-wrap: wrap;
 }
 .footer-inner a {
   text-decoration: none;
