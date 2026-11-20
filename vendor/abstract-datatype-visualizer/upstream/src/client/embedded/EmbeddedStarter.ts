@@ -161,9 +161,10 @@ export class EmbeddedStarter {
         });
 
         for (let dws of divsWithScriptLists) {
-            new ThemeManager(<HTMLDivElement>dws[0][0]).switchTheme("light");
-
+            const themeManager = new ThemeManager(<HTMLDivElement>dws[0][0]);
             await this.initDiv(dws[0], dws[1]);
+            // Creating the Monaco editor selects its default dark theme.
+            themeManager.switchTheme("light");
         }
 
         //@ts-ignore

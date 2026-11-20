@@ -37,6 +37,7 @@ async function sourceMarkers(className){
 function objects(s,type){return Object.values(s.heap).filter(o=>o.type===type);}
 try{
  await load();
+ assert.equal(await page.locator('.monaco-editor .monaco-editor-background').first().evaluate(element=>getComputedStyle(element).backgroundColor),'rgb(255, 255, 255)');
  assert.equal(await page.getByRole('slider',{name:/Animationsgeschwindigkeit/}).count(),0);
  await page.getByRole('button',{name:'Animationsgeschwindigkeit einstellen',exact:true}).click();
  assert.equal(await page.locator('#view #animation-speed').count(),1);
