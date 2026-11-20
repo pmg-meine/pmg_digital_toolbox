@@ -1,0 +1,67 @@
+name: New tool request
+description: Suggest an interactive classroom tool for the toolbox.
+title: "[Tool request]: "
+body:
+  - type: input
+    id: tool-name
+    attributes:
+      label: Tool name
+      description: Suggest a short, descriptive title for the tool.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should the tool do, and what topic should it cover?
+    validations:
+      required: true
+  - type: input
+    id: subject
+    attributes:
+      label: Subject
+      description: Which school subject is the tool for?
+      placeholder: e.g. Mathematics
+    validations:
+      required: true
+  - type: input
+    id: grades
+    attributes:
+      label: Target grades
+      description: Which year groups or grade levels should use it?
+      placeholder: e.g. Years 5–7
+    validations:
+      required: true
+  - type: textarea
+    id: learning-goal
+    attributes:
+      label: Learning goal
+      description: What should students learn or be able to do with the tool?
+    validations:
+      required: true
+  - type: textarea
+    id: interactions
+    attributes:
+      label: Requested interactions
+      description: What should students be able to change, explore, or observe?
+    validations:
+      required: true
+  - type: textarea
+    id: activity
+    attributes:
+      label: Example classroom activity
+      description: Suggest an activity or question students could use with the tool.
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: Search terms
+      description: Suggest keywords that would help teachers find the tool.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any useful examples, resources, or other details.
