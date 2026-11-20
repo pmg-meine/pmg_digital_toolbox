@@ -90,6 +90,7 @@
 .cave-camera-controls button {
   flex: none;
   min-width: 44px;
+  padding: 0;
   font-size: 1.25rem;
 }
 

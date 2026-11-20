@@ -56,15 +56,15 @@ export default function CaveLight() {
         {!hidden && <><p>Verschiebe die Lichtquelle in der Ansicht oder mit den Reglern.</p>{(["x", "y"] as const).map((axis) => <div className="control-group" key={axis}><label htmlFor={`cave-${axis}`}>Position {axis.toUpperCase()} <strong>{source[axis].toFixed(1)}</strong></label><input id={`cave-${axis}`} type="range" min="-4.2" max="4.2" step="0.1" value={source[axis]} onChange={(event) => setSource({ ...source, [axis]: Number(event.target.value) })} /></div>)}
         <div className="control-group"><label htmlFor="cave-height">Höhe der Lichtquelle <strong>{height.toFixed(1)}</strong></label><input id="cave-height" type="range" min="0.6" max="2.5" step="0.1" value={height} onChange={(event) => setHeight(Number(event.target.value))} /></div></>}
         <div className="cave-camera-controls" role="group" aria-label="Kamera steuern">
-          <button type="button" aria-label="Kamera zurücksetzen" title="Kamera zurücksetzen" onClick={() => scene.current?.resetCamera()}>↺</button>
+          <button className="secondary-button" type="button" aria-label="Kamera zurücksetzen" title="Kamera zurücksetzen" onClick={() => scene.current?.resetCamera()}>↺</button>
           {view === "perspective" && <>
-            <button type="button" aria-label="Links drehen" title="Links drehen" onClick={() => scene.current?.rotateCamera(-0.2, 0)}>←</button>
-            <button type="button" aria-label="Rechts drehen" title="Rechts drehen" onClick={() => scene.current?.rotateCamera(0.2, 0)}>→</button>
-            <button type="button" aria-label="Von oben" title="Von oben" onClick={() => scene.current?.rotateCamera(0, -0.2)}>↑</button>
-            <button type="button" aria-label="Seitlicher" title="Seitlicher" onClick={() => scene.current?.rotateCamera(0, 0.2)}>↓</button>
+            <button className="secondary-button" type="button" aria-label="Links drehen" title="Links drehen" onClick={() => scene.current?.rotateCamera(-0.2, 0)}>←</button>
+            <button className="secondary-button" type="button" aria-label="Rechts drehen" title="Rechts drehen" onClick={() => scene.current?.rotateCamera(0.2, 0)}>→</button>
+            <button className="secondary-button" type="button" aria-label="Von oben" title="Von oben" onClick={() => scene.current?.rotateCamera(0, -0.2)}>↑</button>
+            <button className="secondary-button" type="button" aria-label="Seitlicher" title="Seitlicher" onClick={() => scene.current?.rotateCamera(0, 0.2)}>↓</button>
           </>}
-          <button type="button" aria-label="Vergrößern" title="Vergrößern" onClick={() => scene.current?.zoomCamera(1.2)}>＋</button>
-          <button type="button" aria-label="Verkleinern" title="Verkleinern" onClick={() => scene.current?.zoomCamera(1 / 1.2)}>−</button>
+          <button className="secondary-button" type="button" aria-label="Vergrößern" title="Vergrößern" onClick={() => scene.current?.zoomCamera(1.2)}>＋</button>
+          <button className="secondary-button" type="button" aria-label="Verkleinern" title="Verkleinern" onClick={() => scene.current?.zoomCamera(1 / 1.2)}>−</button>
         </div>
         <div className="cave-actions">
           <button className="secondary-button" type="button" onClick={randomize}>Neue Aufgabe</button>
