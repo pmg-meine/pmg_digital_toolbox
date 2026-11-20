@@ -259,9 +259,18 @@ export default function App() {
             setDeveloperMode(false);
             setConfirmation(false);
           }} />}
+          <div className="build-info">
+            {import.meta.env.VITE_BUILD_TIME && (
+              <span>Build: <time dateTime={import.meta.env.VITE_BUILD_TIME}>{new Date(import.meta.env.VITE_BUILD_TIME).toLocaleString()}</time></span>
+            )}
+            {import.meta.env.VITE_BUILD_HASH && (
+              <span>Commit: <a href={`https://github.com/pmg-meine/pmg_digital_toolbox/commit/${import.meta.env.VITE_BUILD_HASH}`}>{import.meta.env.VITE_BUILD_HASH.slice(0, 7)}</a></span>
+            )}
+          </div>
           <div className="footer-links">
             {confirmation && <span role="status">Entwicklermodus aktiviert</span>}
             <Link to="/ueber">Projektinformationen</Link>
+            <a href="https://github.com/pmg-meine/pmg_digital_toolbox">GitHub</a>
             <a
               href="https://pmg-meine.de/"
               target="_blank"
