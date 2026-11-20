@@ -11,3 +11,24 @@
 
 /* Keep the embedded IDE flush with the surrounding workspace. */
 .joe_javaOnlineDiv { border: 0; border-radius: 0; box-shadow: none; }
+
+/* Toolbox dark theme for the diagram and its controls. */
+:root[data-theme="dark"] { color-scheme: dark; color: #eee8f2; background: #18141c; }
+[data-theme="dark"] #workspace, [data-theme="dark"] .ide { background: #211b26; }
+[data-theme="dark"] #workspace-divider { background: #504557; }
+[data-theme="dark"] #view button, [data-theme="dark"] #view input, [data-theme="dark"] #view select,
+[data-theme="dark"] #view .history-controls, [data-theme="dark"] #view .speed-popup,
+[data-theme="dark"] .runtime-node { background: #29212f; color: #eee8f2; border-color: #66586f; }
+[data-theme="dark"] .runtime-node > strong, [data-theme="dark"] .runtime-row,
+[data-theme="dark"] .object-fields, [data-theme="dark"] .adapter-settings { border-color: #504557; }
+[data-theme="dark"] .changed { background: #594a24; }
+[data-theme="dark"] .runtime-status, [data-theme="dark"] .runtime-warning { color: #f3cb75; }
+[data-theme="dark"] .runtime-node.removed .runtime-status { color: #ffaaaa; }
+[data-theme="dark"] .toolbar-context, [data-theme="dark"] .speed-scale, [data-theme="dark"] .animation-settings small,
+[data-theme="dark"] .flow-empty, [data-theme="dark"] .object-cycle { color: #c0b5c8; }
+[data-theme="dark"] #state, [data-theme="dark"] .animation-settings output,
+[data-theme="dark"] .adapter-settings summary, [data-theme="dark"] .site-information a { color: #d5b2f4; }
+[data-theme="dark"] .react-flow__edge-text { fill: #eee8f2; }
+[data-theme="dark"] .react-flow__edge-textbg { fill: #211b26; }
+[data-theme="dark"] #view .react-flow__controls button[aria-expanded=true] { background: #493358 !important; }
+[data-theme="dark"] .inserted, [data-theme="dark"] .moved { animation: none; }

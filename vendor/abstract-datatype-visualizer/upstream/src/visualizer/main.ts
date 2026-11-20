@@ -1,3 +1,20 @@
+// The embedded workspace follows the toolbox even when storage is unavailable.
+function updateTheme() {
+ let theme = 'light';
+ try {
+  theme = window.parent !== window ? window.parent.document.documentElement.dataset.theme ?? 'light'
+   : localStorage.getItem('pmg-digital-toolbox:theme') ?? 'light';
+ } catch { /* A standalone or cross-origin workspace keeps the light theme. */ }
+ document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+ window.dispatchEvent(new Event('toolbox-theme-change'));
+}
+updateTheme();
+try {
+ if (window.parent !== window) {
+  new MutationObserver(updateTheme).observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+ }
+} catch { /* Cross-origin embedding cannot observe the parent. */ }
+window.addEventListener('storage', updateTheme);
 import { getVisualizerUI, publishVisualizerUI, subscribeVisualizerChoices } from './visualizer-ui';
 import { installSplitPane } from './split-pane';
 import { snapshotHistory } from './snapshot-history';

@@ -44,6 +44,16 @@ const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(worldSize, worldSize),
   new THREE.MeshBasicMaterial({ color: 0xffffff }),
 );
+function updateTheme() {
+  const dark = document.documentElement.dataset.theme === "dark";
+  const background = dark ? 0x211b26 : 0xffffff;
+  (scene.background as THREE.Color).setHex(background);
+  floor.material.color.setHex(background);
+}
+updateTheme();
+const themeObserver = new MutationObserver(updateTheme);
+themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 
@@ -566,6 +576,7 @@ return {
     link.click();
   },
   dispose() {
+    themeObserver.disconnect();
     cancelAnimationFrame(frame);
     resizeObserver.disconnect();
     canvas.removeEventListener("pointerdown", pointerDown, true);

@@ -152,3 +152,23 @@ it("resets an incomplete activation sequence after three seconds", () => {
     sessionStorage.clear();
   }
 });
+
+
+describe("dark mode", () => {
+  it("toggles the theme and restores the preference on a later visit", () => {
+    localStorage.clear();
+    open("/");
+    const themeSwitch = screen.getByRole("switch", { name: "Dunkelmodus" });
+    expect(themeSwitch.getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(themeSwitch);
+    expect(themeSwitch.getAttribute("aria-checked")).toBe("true");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(localStorage.getItem("pmg-digital-toolbox:theme")).toBe("dark");
+    cleanup();
+    open("/ueber");
+    expect(screen.getByRole("switch", { name: "Dunkelmodus" }).getAttribute("aria-checked")).toBe("true");
+    fireEvent.click(screen.getByRole("switch", { name: "Dunkelmodus" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+    localStorage.clear();
+  });
+});
