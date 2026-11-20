@@ -283,11 +283,17 @@ export default function App() {
             className="theme-switch"
             type="button"
             role="switch"
+            aria-label="Dunkelmodus"
             aria-checked={darkMode}
             onClick={() => setDarkMode((current) => !current)}
           >
-            <span aria-hidden="true">{darkMode ? "☾" : "☀"}</span>
-            Dunkelmodus
+            <span className="theme-switch-track" aria-hidden="true">
+              <span className="theme-switch-thumb">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18h6M10 21h4M8.5 14.5C7 13.4 6 11.8 6 10a6 6 0 0 1 12 0c0 1.8-1 3.4-2.5 4.5-.7.5-1 1.1-1 1.5h-5c0-.4-.3-1-1-1.5Z" />
+                </svg>
+              </span>
+            </span>
           </button>
         </div>
       </header>
