@@ -44,29 +44,36 @@ export default function CaveLight() {
       <div className="sim-control-panel">
         <h2>Versuchsaufbau</h2>
         <div className="control-group"><label htmlFor="cave-count">Öffnungen <strong>{count}</strong></label><input id="cave-count" type="range" min="1" max="8" value={count} onChange={(event) => setCount(Number(event.target.value))} /></div>
-        <div className="control-group"><label htmlFor="cave-view">Ansicht</label><select id="cave-view" value={view} onChange={(event) => setView(event.target.value as typeof view)}><option value="orthographic">2D – Draufsicht</option><option value="perspective">3D – Perspektive</option></select></div>
-        <div className="control-group"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Lichtstrahlen in der Höhle anzeigen</label></div>
-        <div className="control-group"><label><input type="checkbox" checked={hidden} onChange={(event) => setHidden(event.target.checked)} /> Lichtquelle und Licht in der Höhle ausblenden</label></div>
+        <fieldset className="control-group cave-view-toggle">
+          <legend>Ansicht</legend>
+          <div>
+            <label><input type="radio" name="cave-view" value="orthographic" checked={view === "orthographic"} onChange={() => setView("orthographic")} /><span>2D</span></label>
+            <label><input type="radio" name="cave-view" value="perspective" checked={view === "perspective"} onChange={() => setView("perspective")} /><span>3D</span></label>
+          </div>
+        </fieldset>
+        <div className="control-group cave-checkbox"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Lichtstrahlen in der Höhle anzeigen</label></div>
+        <div className="control-group cave-checkbox"><label><input type="checkbox" checked={hidden} onChange={(event) => setHidden(event.target.checked)} /> Lichtquelle und Licht in der Höhle ausblenden</label></div>
         {!hidden && <><p>Verschiebe die Lichtquelle in der Ansicht oder mit den Reglern.</p>{(["x", "y"] as const).map((axis) => <div className="control-group" key={axis}><label htmlFor={`cave-${axis}`}>Position {axis.toUpperCase()} <strong>{source[axis].toFixed(1)}</strong></label><input id={`cave-${axis}`} type="range" min="-4.2" max="4.2" step="0.1" value={source[axis]} onChange={(event) => setSource({ ...source, [axis]: Number(event.target.value) })} /></div>)}
         <div className="control-group"><label htmlFor="cave-height">Höhe der Lichtquelle <strong>{height.toFixed(1)}</strong></label><input id="cave-height" type="range" min="0.6" max="2.5" step="0.1" value={height} onChange={(event) => setHeight(Number(event.target.value))} /></div></>}
-        <p>In der 3D-Ansicht kannst du die Höhle mit Ziehen drehen und mit dem Mausrad oder zwei Fingern zoomen.</p>
-        {view === "perspective" && <div className="cave-camera-controls" role="group" aria-label="Kamera drehen">
-          <button type="button" onClick={() => scene.current?.rotateCamera(-0.2, 0)}>Links drehen</button>
-          <button type="button" onClick={() => scene.current?.rotateCamera(0.2, 0)}>Rechts drehen</button>
-          <button type="button" onClick={() => scene.current?.rotateCamera(0, -0.2)}>Von oben</button>
-          <button type="button" onClick={() => scene.current?.rotateCamera(0, 0.2)}>Seitlicher</button>
-        </div>}
-        <div className="cave-camera-controls" role="group" aria-label="Kamera zoomen">
-          <button type="button" onClick={() => scene.current?.zoomCamera(1.2)}>Vergrößern</button>
-          <button type="button" onClick={() => scene.current?.zoomCamera(1 / 1.2)}>Verkleinern</button>
+        <div className="cave-camera-controls" role="group" aria-label="Kamera steuern">
+          <button type="button" aria-label="Kamera zurücksetzen" title="Kamera zurücksetzen" onClick={() => scene.current?.resetCamera()}>↺</button>
+          {view === "perspective" && <>
+            <button type="button" aria-label="Links drehen" title="Links drehen" onClick={() => scene.current?.rotateCamera(-0.2, 0)}>←</button>
+            <button type="button" aria-label="Rechts drehen" title="Rechts drehen" onClick={() => scene.current?.rotateCamera(0.2, 0)}>→</button>
+            <button type="button" aria-label="Von oben" title="Von oben" onClick={() => scene.current?.rotateCamera(0, -0.2)}>↑</button>
+            <button type="button" aria-label="Seitlicher" title="Seitlicher" onClick={() => scene.current?.rotateCamera(0, 0.2)}>↓</button>
+          </>}
+          <button type="button" aria-label="Vergrößern" title="Vergrößern" onClick={() => scene.current?.zoomCamera(1.2)}>＋</button>
+          <button type="button" aria-label="Verkleinern" title="Verkleinern" onClick={() => scene.current?.zoomCamera(1 / 1.2)}>−</button>
         </div>
-        <button className="secondary-button" type="button" onClick={() => scene.current?.resetCamera()}>Kamera zurücksetzen</button>
-        <button className="secondary-button" type="button" onClick={randomize}>Neue Aufgabe ↻</button>
-        <button className="secondary-button" type="button" onClick={() => scene.current?.download()}>Bild herunterladen</button>
-        <p>Verlängere die äußeren Lichtbündel gedanklich in die Höhle. Wo treffen sie sich? Blende die Lichtquelle zur Kontrolle ein.</p>
+        <div className="cave-actions">
+          <button className="secondary-button" type="button" onClick={randomize}>Neue Aufgabe</button>
+          <button className="secondary-button" type="button" onClick={() => scene.current?.download()}>Bild herunterladen</button>
+        </div>
       </div>
       <div className="sim-display cave-display">
         <div className="cave-viewport"><canvas ref={canvas} role="img" aria-label={`${view === "orthographic" ? "Draufsicht" : "3D-Ansicht"} der Höhle mit ${count} Öffnungen${hidden ? "; Lichtquelle verborgen" : `; Lichtquelle bei X ${source.x.toFixed(1)}, Y ${source.y.toFixed(1)}`}`} /></div>
+        {view === "perspective" && <p>In der 3D-Ansicht kannst du die Höhle mit Ziehen drehen und mit dem Mausrad oder zwei Fingern zoomen.</p>}
         {sceneError && <p role="alert">Die 3D-Darstellung konnte nicht geladen werden. Bitte aktiviere WebGL in deinem Browser.</p>}
         <p>Die farbigen Flächen zeigen die Lichtbündel am Boden. Die Darstellung vereinfacht die Lichtquelle zu einem Punkt.</p>
       </div>
