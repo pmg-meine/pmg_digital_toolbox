@@ -18,6 +18,19 @@ export type Tool = {
 // The catalog is the single source of truth: add an entry when adding a tool.
 export const tools: Tool[] = [
   {
+    slug: "lichtquellen-lokalisieren",
+    component: lazy(() => import("../tools/lichtquellen-lokalisieren/CaveLight")),
+    title: "Lichtquellen lokalisieren",
+    subject: "Physik",
+    description: "Lichtbündel an einer Höhle untersuchen und ihre Lichtquelle finden.",
+    grades: "Jg. 6",
+    tags: ["Licht", "Lichtquelle", "Lichtstrahlen", "Optik"],
+    learningGoal: "Die Lage einer Lichtquelle mithilfe der geradlinigen Ausbreitung von Licht bestimmen.",
+    exampleActivity: "Blende die Lichtquelle aus und verlängere die Lichtbündel gedanklich bis zu ihrem Ursprung.",
+    badge: "Simulation",
+    icon: "☀",
+  },
+  {
     slug: "ohmsches-gesetz",
     component: lazy(() => import("../tools/ohmsches-gesetz/OhmsLaw")),
     title: "Ohmsches Gesetz",
