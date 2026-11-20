@@ -8,7 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "postinstall": "npm ci --prefix vendor/abstract-datatype-visualizer/upstream --no-audit --no-fund",
+    "build:visualizer": "npm run visualizer:build --prefix vendor/abstract-datatype-visualizer/upstream",
+    "predev": "npm run build:visualizer",
+    "prebuild": "npm run build:visualizer"
   },
   "dependencies": {
     "react": "^19.2.0",
