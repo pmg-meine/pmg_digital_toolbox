@@ -751,12 +751,6 @@ h2 {
   padding: 24px 27px;
   background: #fcfbfd;
 }
-.info-label {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--magenta);
-  font-weight: 800;
-}
 .teacher-info h2 {
   font-size: 17px;
   margin: 8px 0;

@@ -59,7 +59,8 @@ describe("toolbox routes", () => {
     expect(
       await screen.findByLabelText(`${tool.title} – Interaktive Anwendung`),
     ).toBeTruthy();
-    await screen.findByText(tool.learningGoal);
+    expect(screen.queryByText(tool.learningGoal)).toBeNull();
+    expect(screen.queryByText(tool.exampleActivity)).toBeNull();
   });
   it.each(["/werkzeuge/unbekannt", "/unbekannt"])(
     "handles unknown route %s",
