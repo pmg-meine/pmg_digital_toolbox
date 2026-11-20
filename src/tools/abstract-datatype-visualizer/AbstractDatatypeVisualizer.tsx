@@ -33,8 +33,20 @@ export default function AbstractDatatypeVisualizer() {
       </p>
       <div className={`datatype-workspace${expanded ? " datatype-workspace-expanded" : ""}`}>
         <div className="datatype-workspace-toolbar">
-          <button type="button" aria-pressed={expanded} onClick={() => setExpanded(!expanded)}>
-            {expanded ? "Vollbild verlassen" : "Vollbild"}
+          <button
+            type="button"
+            aria-label={expanded ? "Vollbild verlassen" : "Vollbild"}
+            title={expanded ? "Vollbild verlassen" : "Vollbild"}
+            aria-pressed={expanded}
+            onClick={() => setExpanded(!expanded)}
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {expanded ? (
+                <path d="M4 8h4V4 M20 8h-4V4 M4 16h4v4 M20 16h-4v4" />
+              ) : (
+                <path d="M4 8V4h4 M20 8V4h-4 M4 16v4h4 M20 16v4h-4" />
+              )}
+            </svg>
           </button>
         </div>
         <iframe

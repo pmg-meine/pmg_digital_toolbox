@@ -161,7 +161,7 @@ export class EmbeddedStarter {
         });
 
         for (let dws of divsWithScriptLists) {
-            new ThemeManager(<HTMLDivElement>dws[0][0]).switchTheme("dark");
+            new ThemeManager(<HTMLDivElement>dws[0][0]).switchTheme("light");
 
             await this.initDiv(dws[0], dws[1]);
         }

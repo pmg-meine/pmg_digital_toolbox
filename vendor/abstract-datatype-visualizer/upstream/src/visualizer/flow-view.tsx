@@ -126,7 +126,7 @@ function DiagramView({ diagram, instant, viewRevision }: { diagram: Diagram; ins
     return { ...edge, style: { ...edge.style, opacity } };
   })} nodeTypes={nodeTypes}
     onNodesChange={onNodesChange} nodesDraggable={!moving} nodesConnectable={false} edgesReconnectable={false}
-    deleteKeyCode={null} minZoom={0.1} maxZoom={2} colorMode="dark"
+    deleteKeyCode={null} minZoom={0.1} maxZoom={2} colorMode="light"
     ariaLabelConfig={{ 'controls.zoomIn.ariaLabel': 'Vergrößern', 'controls.zoomOut.ariaLabel': 'Verkleinern', 'controls.fitView.ariaLabel': 'Gesamte Struktur anzeigen' }}>
     <Background /><FlowControls /><HistoryControls />
     {!nodes.length && <div className="flow-empty">{diagram === emptyDiagram ? 'Kein Container in diesem Zustand' : 'Leere Reihung'}</div>}
