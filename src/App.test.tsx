@@ -66,6 +66,19 @@ describe("toolbox routes", () => {
     expect(screen.queryByText(tool.learningGoal)).toBeNull();
     expect(screen.queryByText(tool.exampleActivity)).toBeNull();
   });
+  it.each(tools)("expands and restores $slug", async (tool) => {
+    open(`/werkzeuge/${tool.slug}`);
+    const container = await screen.findByLabelText(`${tool.title} – Interaktive Anwendung`);
+    const button = screen.getByRole("button", { name: "Vollbild" });
+    fireEvent.click(button);
+    expect(container.classList.contains("simulation-container-expanded")).toBe(true);
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+    expect(document.body.style.overflow).toBe("hidden");
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(container.classList.contains("simulation-container-expanded")).toBe(false);
+    expect(button.getAttribute("aria-pressed")).toBe("false");
+    expect(document.body.style.overflow).toBe("");
+  });
   it.each(["/werkzeuge/unbekannt", "/unbekannt"])(
     "handles unknown route %s",
     (path) => {

@@ -110,6 +110,51 @@ function NotFound() {
   );
 }
 
+function SimulationContainer({ title, children }: { title: string; children: React.ReactNode }) {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!expanded) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpanded(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [expanded]);
+
+  const label = expanded ? "Vollbild verlassen" : "Vollbild";
+  return (
+    <section
+      className={`simulation-container${expanded ? " simulation-container-expanded" : ""}`}
+      aria-label={`${title} – Interaktive Anwendung`}
+    >
+      <button
+        className="simulation-expand-button"
+        type="button"
+        aria-label={label}
+        title={label}
+        aria-pressed={expanded}
+        onClick={() => setExpanded((current) => !current)}
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {expanded ? (
+            <path d="M4 8h4V4 M20 8h-4V4 M4 16h4v4 M20 16h-4v4" />
+          ) : (
+            <path d="M4 8V4h4 M20 8V4h-4 M4 16v4h4 M20 16v4h-4" />
+          )}
+        </svg>
+      </button>
+      {children}
+    </section>
+  );
+}
+
 function ToolPage() {
   const { slug } = useParams();
   const tool = tools.find((entry) => entry.slug === slug);
@@ -133,14 +178,11 @@ function ToolPage() {
         </div>
         <span className="tool-format">{tool.badge}</span>
       </div>
-      <section
-        className="simulation-container"
-        aria-label={`${tool.title} – Interaktive Anwendung`}
-      >
+      <SimulationContainer key={tool.slug} title={tool.title}>
         <Suspense fallback={<p role="status">Werkzeug wird geladen …</p>}>
           <Simulation />
         </Suspense>
-      </section>
+      </SimulationContainer>
     </div>
   );
 }
