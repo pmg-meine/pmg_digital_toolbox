@@ -9,6 +9,7 @@ Small tools should be understandable without documentation, but should include a
 - Register metadata and a lazy component import together in `src/data/tools.ts`. Extend the subject type, filter list, and theme for new subjects.
 - Keep simulations independent of routing and deployment configuration. Extract shared code only when it is genuinely reusable.
 - No duplicate headers, footers, or bespoke color systems; reuse `src/styles/global.css` tokens.
+- Every tool must support both light and dark mode and follow the header theme switch, including embedded content and visualizations.
 - Use a proper `<label>` for controls; mouse, keyboard, and touch must all work.
 - Prefer semantic HTML and text alternatives for charts or color-driven information.
 - Buttons and sliders should offer at least 44×44 CSS pixel targets on touchscreens.
@@ -19,7 +20,7 @@ Small tools should be understandable without documentation, but should include a
 
 ## Acceptance checks
 
-Run `npm run check`, `npm test`, and `npm run build`. In Chrome/Firefox desktop and Safari on iPad, check 768px and 1024px widths, scrolling, orientation changes, and pinch zoom. Confirm that the browser back action returns to the catalogue. Test a keyboard-only navigation path and sufficient contrast.
+Run `npm run check`, `npm test`, and `npm run build`. In Chrome/Firefox desktop and Safari on iPad, check 768px and 1024px widths, scrolling, orientation changes, and pinch zoom. Confirm that the browser back action returns to the catalogue. Test a keyboard-only navigation path and sufficient contrast in both light and dark mode.
 
 ## Ideas and review
 
