@@ -95,6 +95,7 @@ describe("developer mode", () => {
     expect(screen.queryByLabelText("Version")).toBeNull();
     fireEvent.click(trigger);
     expect(screen.getByLabelText("Version")).toBeTruthy();
+    expect(screen.getByLabelText("Version").closest("footer")).toBeTruthy();
     expect(sessionStorage.getItem("pmg-digital-toolbox:developer-mode")).toBe("enabled");
     fireEvent.click(screen.getByRole("button", { name: "Ausblenden" }));
     expect(screen.queryByLabelText("Version")).toBeNull();

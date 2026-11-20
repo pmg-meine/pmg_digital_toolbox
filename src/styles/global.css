@@ -528,7 +528,7 @@ h2 {
 .footer-inner strong {
   color: var(--purple);
 }
-.footer-inner > div {
+.footer-links {
   display: flex;
   gap: 22px;
 }

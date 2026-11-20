@@ -234,11 +234,6 @@ export default function App() {
               PMG Website <span aria-hidden="true">↗</span>
             </a>
           </nav>
-          {(channel === "preview" || developerMode) && <VersionSelector onDisable={() => {
-            saveDeveloperMode(false);
-            setDeveloperMode(false);
-            setConfirmation(false);
-          }} />}
         </div>
       </header>
       <main
@@ -259,7 +254,12 @@ export default function App() {
             <button className="developer-trigger" type="button" onClick={activateDeveloperMode}><strong>PMG Digital Toolbox</strong></button> · Interaktive Werkzeuge für den
             Unterricht
           </span>
-          <div>
+          {(channel === "preview" || developerMode) && <VersionSelector onDisable={() => {
+            saveDeveloperMode(false);
+            setDeveloperMode(false);
+            setConfirmation(false);
+          }} />}
+          <div className="footer-links">
             {confirmation && <span role="status">Entwicklermodus aktiviert</span>}
             <Link to="/ueber">Projektinformationen</Link>
             <a
