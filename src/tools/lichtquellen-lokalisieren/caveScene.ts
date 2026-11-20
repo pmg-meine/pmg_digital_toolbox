@@ -1,9 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { generateOpenings, type Opening, type OpeningSide } from "./openings";
 
 type CameraMode = "orthographic" | "perspective";
-type OpeningSide = "north" | "south" | "west" | "east";
-interface Opening { side: OpeningSide; center: number }
 interface OpeningEndpoints { center: THREE.Vector3; left: THREE.Vector3; right: THREE.Vector3 }
 type SceneCamera = THREE.PerspectiveCamera | THREE.OrthographicCamera;
 const cave = { width: 12, depth: 12, wallThickness: 0.04, wallHeight: 2.8 } as const;
@@ -105,6 +104,7 @@ const sourceState = new THREE.Vector3(
   Number(inputs.lightZ.value),
 );
 
+let openingLayout = generateOpenings();
 let openings: Opening[] = [];
 const pointer = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
@@ -131,10 +131,6 @@ function createControls(cameraObject: SceneCamera): OrbitControls {
   }
 
   return nextControls;
-}
-
-function randomBetween(min: number, max: number): number {
-  return min + Math.random() * (max - min);
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -484,36 +480,8 @@ function updateSource(): void {
   updateReadout();
 }
 
-function generateOpenings(count: number): void {
-  const maxPerSide = 2;
-  const sides: OpeningSide[] = ["north", "south", "west", "east"];
-  const sideUsage = new Map<OpeningSide, number>(sides.map((side) => [side, 0]));
-  const nextOpenings: Opening[] = [];
-  const maxAttempts = 400;
-  let attempts = 0;
-
-  while (nextOpenings.length < count && attempts < maxAttempts) {
-    attempts += 1;
-    const side = sides[Math.floor(Math.random() * sides.length)];
-    if ((sideUsage.get(side) ?? 0) >= maxPerSide) {
-      continue;
-    }
-
-    const limit = side === "north" || side === "south" ? cave.width / 2 : cave.depth / 2;
-    const center = randomBetween(-limit + 1.4, limit - 1.4);
-
-    const overlap = nextOpenings.some(
-      (opening) => opening.side === side && Math.abs(opening.center - center) < openingWidth + 0.8,
-    );
-    if (overlap) {
-      continue;
-    }
-
-    nextOpenings.push({ side, center });
-    sideUsage.set(side, (sideUsage.get(side) ?? 0) + 1);
-  }
-
-  openings = nextOpenings;
+function updateOpenings(count: number): void {
+  openings = openingLayout.slice(0, count);
   rebuildWalls();
   rebuildBeams();
   updateReadout();
@@ -543,7 +511,7 @@ canvas.addEventListener("pointercancel", pointerUp);
 const resizeObserver = new ResizeObserver(resizeRenderer);
 resizeObserver.observe(canvas.parentElement!);
 resizeRenderer();
-generateOpenings(4);
+updateOpenings(4);
 updateSource();
 setCameraTopView();
 let frame = 0;
@@ -558,7 +526,7 @@ return {
     sourceState.set(x, height, y);
     updateSource();
   },
-  setCount(count: number) { inputs.holeCount.value = String(count); generateOpenings(count); },
+  setCount(count: number) { inputs.holeCount.value = String(count); updateOpenings(count); },
   setVisibility(hidden: boolean, rays: boolean) {
     inputs.hideSource.checked = hidden;
     inputs.showInnerRays.checked = rays;
@@ -586,7 +554,10 @@ return {
     }
     controls.update();
   },
-  randomizeOpenings() { generateOpenings(Number(inputs.holeCount.value)); },
+  randomizeOpenings() {
+    openingLayout = generateOpenings();
+    updateOpenings(Number(inputs.holeCount.value));
+  },
   download() {
     renderer.render(scene, camera);
     const link = document.createElement("a");
