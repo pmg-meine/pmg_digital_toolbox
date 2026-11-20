@@ -1019,3 +1019,13 @@ h2 {
   font: inherit;
   cursor: pointer;
 }
+
+/* The IDE needs enough vertical space for its editor and visualization. */
+.datatype-visualizer {
+  display: block;
+  width: 100%;
+  height: 75vh;
+  min-height: 600px;
+  border: 1px solid var(--border, #d8d8e0);
+  border-radius: 8px;
+}

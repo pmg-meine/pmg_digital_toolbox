@@ -16,10 +16,11 @@ function open(path: string, base = "/pmg_digital_toolbox/") {
 }
 
 describe("toolbox routes", () => {
-  it("registers all three tools with unique slugs and components", () => {
+  it("registers all tools with unique slugs and components", () => {
     expect(tools.map((tool) => tool.slug)).toEqual([
       "ohmsches-gesetz",
       "stack-container",
+      "abstract-datatype-visualizer",
       "bruchteile",
     ]);
     expect(new Set(tools.map((tool) => tool.slug)).size).toBe(tools.length);
