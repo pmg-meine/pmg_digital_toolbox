@@ -25,7 +25,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x09141b);
+scene.background = new THREE.Color(0xffffff);
 
 const perspectiveCamera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
 const orthographicCamera = new THREE.OrthographicCamera(-12, 12, 12, -12, 0.1, 100);
@@ -35,19 +35,15 @@ const cameraTarget = new THREE.Vector3(0, 0, 0);
 let camera: SceneCamera = orthographicCamera;
 let controls = createControls(camera);
 
-scene.add(new THREE.AmbientLight(0xc7d9df, 1.1));
+scene.add(new THREE.AmbientLight(0xffffff, 1.1));
 
-const sunLight = new THREE.DirectionalLight(0xd8ecff, 0.5);
+const sunLight = new THREE.DirectionalLight(0xffffff, 0.5);
 sunLight.position.set(5, 12, 4);
 scene.add(sunLight);
 
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(worldSize, worldSize),
-  new THREE.MeshStandardMaterial({
-    color: 0x101d25,
-    roughness: 1,
-    metalness: 0,
-  }),
+  new THREE.MeshBasicMaterial({ color: 0xffffff }),
 );
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
@@ -55,7 +51,7 @@ scene.add(floor);
 const innerFloor = new THREE.Mesh(
   new THREE.PlaneGeometry(cave.width - 0.1, cave.depth - 0.1),
   new THREE.MeshStandardMaterial({
-    color: 0x16252d,
+    color: 0xc4c4c4,
     roughness: 1,
     metalness: 0,
   }),
@@ -66,7 +62,7 @@ scene.add(innerFloor);
 
 const ringOutline = new THREE.LineSegments(
   new THREE.EdgesGeometry(new THREE.PlaneGeometry(cave.width, cave.depth)),
-  new THREE.LineBasicMaterial({ color: 0x35515d, transparent: true, opacity: 0.7 }),
+  new THREE.LineBasicMaterial({ color: 0x777777, transparent: true, opacity: 0.7 }),
 );
 ringOutline.rotation.x = -Math.PI / 2;
 ringOutline.position.y = 0.01;
@@ -84,9 +80,7 @@ scene.add(interiorRayGroup);
 const sourceMesh = new THREE.Mesh(
   new THREE.SphereGeometry(0.3, 24, 24),
   new THREE.MeshStandardMaterial({
-    color: 0xffd57b,
-    emissive: 0xffa93a,
-    emissiveIntensity: 1.8,
+    color: 0xa30c8f,
     roughness: 0.32,
   }),
 );
@@ -95,7 +89,7 @@ scene.add(sourceMesh);
 const sourceHalo = new THREE.Mesh(
   new THREE.RingGeometry(0.45, 0.7, 40),
   new THREE.MeshBasicMaterial({
-    color: 0xffd57b,
+    color: 0xa30c8f,
     transparent: true,
     opacity: 0.4,
     side: THREE.DoubleSide,
@@ -264,7 +258,7 @@ function createWallSegment(width: number, depth: number, x: number, z: number): 
   const mesh = new THREE.Mesh(
     new THREE.BoxGeometry(width, cave.wallHeight, depth),
     new THREE.MeshStandardMaterial({
-      color: 0x45545d,
+      color: 0x888888,
       roughness: 0.95,
       metalness: 0.02,
     }),
@@ -401,7 +395,7 @@ function createBeamPolygon(points: THREE.Vector3[], color: number, opacity: numb
 function createInteriorRayLine(start: THREE.Vector3, end: THREE.Vector3): THREE.Line {
   const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
   const material = new THREE.LineDashedMaterial({
-    color: 0xffd36a,
+    color: 0xa30c8f,
     dashSize: 0.4,
     gapSize: 0.18,
     transparent: true,
@@ -416,7 +410,7 @@ function createOpeningMarker(opening: Opening, openingData: OpeningEndpoints): T
   const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(openingWidth * 0.96, 0.08),
     new THREE.MeshBasicMaterial({
-      color: 0xc1efff,
+      color: 0xa30c8f,
       transparent: true,
       opacity: 0.65,
       side: THREE.DoubleSide,
@@ -454,7 +448,7 @@ function rebuildBeams(): void {
     beamGroup.add(
       createBeamPolygon(
         [openingData.left, openingData.right, rightOuter, leftOuter],
-        0x95e3ff,
+        0xd66bc7,
         0.72,
       ),
     );
@@ -463,7 +457,7 @@ function rebuildBeams(): void {
       beamGroup.add(
         createBeamPolygon(
           [sourceFloor, openingData.left, openingData.right],
-          0xffd36a,
+          0xd66bc7,
           0.24,
         ),
       );
