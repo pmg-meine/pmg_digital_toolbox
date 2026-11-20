@@ -1,10 +1,27 @@
-.cave-display svg {
+.cave-viewport {
+  width: 100%;
+  height: min(620px, 75vw);
+  min-height: 320px;
+}
+
+.cave-viewport canvas {
   display: block;
   width: 100%;
-  max-height: 620px;
-  touch-action: pinch-zoom;
+  height: 100%;
+  touch-action: none;
 }
 
 .cave-display p {
   padding: 0 1rem;
+}
+
+.cave-camera-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cave-camera-controls button {
+  min-height: 44px;
 }
