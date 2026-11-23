@@ -68,13 +68,8 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
 
   pdf.setTextColor(34, 34, 34);
   pdf.setFontSize(9);
-  pdf.text(`Lichtquelle · Öffnungswinkel ${setup.angle}° · Schirm rechts`, 10, 185);
-  pdf.text("QR-Code scannen oder Link öffnen und Licht einschalten:", 10, 190);
+  pdf.textWithLink("Lösung: Klicke hier oder scanne den QR-Code und schalte das Licht ein.", 10, 185, { url: shareUrl });
   pdf.setFontSize(7);
-  const lines: string[] = pdf.splitTextToSize(shareUrl, 250);
-  lines.forEach((line, index) => {
-    const lineY = 194 + index * 3;
-    pdf.text(line, 10, lineY);
-    pdf.link(10, lineY - 2.5, pdf.getTextWidth(line), 3, { url: shareUrl });
-  });
+  pdf.text(`Parameter: Lichtquelle y=${setup.sourceY}, Öffnungswinkel=${setup.angle}°`, 10, 191);
+  pdf.text(`Steine (Oberkante y, von oben): Ebene 1=${setup.positions[0]}, ${setup.positions[1]}; Ebene 2=${setup.positions[2]}, ${setup.positions[3]}`, 10, 195);
 }

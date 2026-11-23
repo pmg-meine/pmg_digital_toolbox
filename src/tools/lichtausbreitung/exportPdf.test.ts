@@ -13,6 +13,10 @@ describe("printable light setup", () => {
     expect(pdf.getNumberOfPages()).toBe(1);
     expect(output).toContain("/Subtype /Link");
     expect(output).toContain(url);
+    expect(output).toContain("Klicke hier oder scanne den QR-Code");
+    expect(output).toContain("Lichtquelle y=105");
+    expect(output).toContain("Ebene 1=0, 115; Ebene 2=0, 115");
+    expect(output).not.toContain(`(${url}) Tj`);
   });
 
   it("creates one page and a matching link for each exercise", () => {
@@ -25,6 +29,7 @@ describe("printable light setup", () => {
     for (const setup of setups) {
       expect(output).toContain(setupUrl(baseUrl, setup));
     }
+    expect(output).toContain("Lichtquelle y=80");
     expect(output.match(/\/Subtype \/Link/g)?.length).toBeGreaterThanOrEqual(2);
   });
 });
