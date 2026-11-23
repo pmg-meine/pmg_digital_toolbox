@@ -1,18 +1,32 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
+import QRCode from "qrcode";
+import { defaultSetup, maximumBrickY, minimumBrickY, randomSetup, readSetup, setupUrl } from "./setup";
 import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH, lightPolygon } from "./geometry";
 import "./light.css";
 
-const initialPositions = [0, 115, 0, 115];
-// Keep one millimetre on the paper so every brick remains draggable.
-const minimumBrickY = 1 - BRICK_HEIGHT;
-const maximumBrickY = HEIGHT - 1;
-
 export default function LightPropagation() {
-  const [sourceY, setSourceY] = useState(105);
-  const [angle, setAngle] = useState(50);
-  const [positions, setPositions] = useState(initialPositions);
+  const [initialSetup] = useState(() => readSetup(window.location.search));
+  const [sourceY, setSourceY] = useState(initialSetup.sourceY);
+  const [angle, setAngle] = useState(initialSetup.angle);
+  const [positions, setPositions] = useState(initialSetup.positions);
   const [lightOn, setLightOn] = useState(false);
   const [showRays, setShowRays] = useState(false);
+  useEffect(() => {
+    window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, positions }));
+  }, [sourceY, angle, positions]);
+
+  useEffect(() => {
+    function restoreSetup() {
+      const setup = readSetup(window.location.search);
+      setSourceY(setup.sourceY);
+      setAngle(setup.angle);
+      setPositions(setup.positions);
+      setLightOn(false);
+    }
+    window.addEventListener("popstate", restoreSetup);
+    return () => window.removeEventListener("popstate", restoreSetup);
+  }, []);
+
   const drag = useRef<{ index: number; offset: number } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const bricks = positions.map((y, index) => ({
@@ -58,11 +72,14 @@ export default function LightPropagation() {
     else moveBrick(drag.current.index, value);
   }
 
-  function exportScene() {
+  async function exportScene() {
+    const shareUrl = setupUrl(window.location.href, { sourceY, angle, positions });
+    const qr = await QRCode.toString(shareUrl, { type: "svg", errorCorrectionLevel: "M", margin: 4 });
+    const qrContent = qr.replace(/<svg[^>]*>/, (tag) => tag.replace("<svg ", '<svg x="270" y="211" width="24" height="24" '));
     const brickElements = bricks.map((brick) =>
       `<rect x="${brick.x}" y="${brick.y}" width="${brick.width}" height="${brick.height}" fill="#d3d3d3" stroke="#777" stroke-width="0.3"/>`,
     ).join("");
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 297 210"><defs><pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" fill="none" stroke="#d8d8d8" stroke-width="0.2"/></pattern></defs><rect width="297" height="210" fill="white"/><rect width="297" height="210" fill="url(#grid)"/><rect x="0" y="${sourceY - 5}" width="9" height="10" fill="#222"/>${brickElements}<line x1="296" y1="0" x2="296" y2="210" stroke="#222" stroke-width="2"/><text x="12" y="203" font-family="sans-serif" font-size="4">Lichtquelle · Öffnungswinkel ${angle}° · Schirm rechts</text></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="235mm" viewBox="0 0 297 235"><defs><pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" fill="none" stroke="#d8d8d8" stroke-width="0.2"/></pattern></defs><rect width="297" height="210" fill="white"/><rect width="297" height="210" fill="url(#grid)"/><rect x="0" y="${sourceY - 5}" width="9" height="10" fill="#222"/>${brickElements}<line x1="296" y1="0" x2="296" y2="210" stroke="#222" stroke-width="2"/><text x="12" y="203" font-family="sans-serif" font-size="4">Lichtquelle · Öffnungswinkel ${angle}° · Schirm rechts</text><rect y="210" width="297" height="25" fill="white"/><text x="12" y="223" font-family="sans-serif" font-size="4">QR-Code scannen und Licht einschalten, um die Vermutung zu überprüfen.</text>${qrContent}</svg>`;
     const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
     const link = document.createElement("a");
     link.href = url;
@@ -89,8 +106,9 @@ export default function LightPropagation() {
           <div className="control-group"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Randstrahlen anzeigen</label></div>
           <div className="button-line">
             <button className="primary-button" onClick={() => setLightOn(!lightOn)}>{lightOn ? "Licht ausschalten" : "Licht einschalten"}</button>
+            <button className="secondary-button" onClick={() => { const setup = randomSetup(); setSourceY(setup.sourceY); setAngle(setup.angle); setPositions(setup.positions); setLightOn(false); }}>Zufälliger Aufbau</button>
             <button className="secondary-button" onClick={exportScene}>Aufbau als SVG speichern</button>
-            <button className="secondary-button" onClick={() => { setSourceY(105); setAngle(50); setPositions(initialPositions); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
+            <button className="secondary-button" onClick={() => { setSourceY(defaultSetup.sourceY); setAngle(defaultSetup.angle); setPositions(defaultSetup.positions); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
           </div>
         </div>
         <div className="sim-display">
@@ -108,7 +126,7 @@ export default function LightPropagation() {
               <rect x="0" y={sourceY - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, -1, sourceY)} />
             </svg>
             <p className="sim-caption">Lichtquelle und Steine ziehen oder mit den Reglern bewegen · Schirm rechts · Steinpositionen von der oberen Blattkante gemessen</p>
-            <p className="sim-caption">Die SVG-Datei zeigt immer den Aufbau ohne Licht. Zum Ausdrucken im Browser öffnen und Querformat wählen.</p>
+            <p className="sim-caption">Die SVG-Datei zeigt immer den Aufbau ohne Licht. Der QR-Code öffnet denselben Aufbau mit ausgeschaltetem Licht. Zum Ausdrucken im Browser öffnen und Querformat wählen.</p>
           </div>
         </div>
       </div>
