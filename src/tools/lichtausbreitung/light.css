@@ -3,7 +3,7 @@
 .light-grid-line { fill: none; stroke: #d8d8d8; stroke-width: .2; }
 .light-beam { fill: #f6c8df; fill-opacity: .7; }
 .light-ray { stroke: #bd347a; stroke-width: .45; pointer-events: none; }
-.light-brick { fill: #d3d3d3; cursor: grab; touch-action: none; }
+.light-brick { fill: #d3d3d3; stroke: #777; stroke-width: .3; cursor: grab; touch-action: none; }
 .light-screen { stroke: #40352d; stroke-width: 2; }
 .light-screen-result { stroke: #c61e78; stroke-width: 3; }
 .light-source { fill: #28202f; cursor: grab; touch-action: none; }
@@ -13,7 +13,7 @@
 [data-theme="dark"] .light-grid-line { stroke: #504557; }
 [data-theme="dark"] .light-beam { fill: #f6c8df; fill-opacity: .35; }
 [data-theme="dark"] .light-ray { stroke: #ff9dce; }
-[data-theme="dark"] .light-brick { fill: #aaa3ad; }
+[data-theme="dark"] .light-brick { fill: #aaa3ad; stroke: #e0d8e3; }
 [data-theme="dark"] .light-screen { stroke: #c0b5c8; }
 [data-theme="dark"] .light-screen-result { stroke: #ff82c0; }
 [data-theme="dark"] .light-source { fill: #e8dfea; }

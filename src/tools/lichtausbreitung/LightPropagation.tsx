@@ -3,6 +3,9 @@ import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH, lightPolygon } from "
 import "./light.css";
 
 const initialPositions = [0, 115, 0, 115];
+// Keep one millimetre on the paper so every brick remains draggable.
+const minimumBrickY = 1 - BRICK_HEIGHT;
+const maximumBrickY = HEIGHT - 1;
 
 export default function LightPropagation() {
   const [sourceY, setSourceY] = useState(105);
@@ -26,8 +29,8 @@ export default function LightPropagation() {
 
   function moveBrick(index: number, value: number) {
     setPositions((current) => {
-      const minimum = index % 2 === 0 ? 0 : current[index - 1] + BRICK_HEIGHT;
-      const maximum = index % 2 === 0 ? current[index + 1] - BRICK_HEIGHT : HEIGHT - BRICK_HEIGHT;
+      const minimum = index % 2 === 0 ? minimumBrickY : current[index - 1] + BRICK_HEIGHT;
+      const maximum = index % 2 === 0 ? current[index + 1] - BRICK_HEIGHT : maximumBrickY;
       return current.map((position, i) => i === index ? Math.round(Math.max(minimum, Math.min(maximum, value))) : position);
     });
   }
@@ -57,7 +60,7 @@ export default function LightPropagation() {
 
   function exportScene() {
     const brickElements = bricks.map((brick) =>
-      `<rect x="${brick.x}" y="${brick.y}" width="${brick.width}" height="${brick.height}" fill="#d3d3d3"/>`,
+      `<rect x="${brick.x}" y="${brick.y}" width="${brick.width}" height="${brick.height}" fill="#d3d3d3" stroke="#777" stroke-width="0.3"/>`,
     ).join("");
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 297 210"><defs><pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" fill="none" stroke="#d8d8d8" stroke-width="0.2"/></pattern></defs><rect width="297" height="210" fill="white"/><rect width="297" height="210" fill="url(#grid)"/><rect x="0" y="${sourceY - 5}" width="9" height="10" fill="#222"/>${brickElements}<line x1="296" y1="0" x2="296" y2="210" stroke="#222" stroke-width="2"/><text x="12" y="203" font-family="sans-serif" font-size="4">Lichtquelle · Öffnungswinkel ${angle}° · Schirm rechts</text></svg>`;
     const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
@@ -80,7 +83,7 @@ export default function LightPropagation() {
           {positions.map((position, index) => (
             <div className="control-group" key={index}>
               <label htmlFor={`brick-${index}`}>Stein {Math.floor(index / 2) + 1} {index % 2 === 0 ? "oben" : "unten"} <strong>{position} mm</strong></label>
-              <input id={`brick-${index}`} type="range" min={index % 2 === 0 ? 0 : positions[index - 1] + BRICK_HEIGHT} max={index % 2 === 0 ? positions[index + 1] - BRICK_HEIGHT : HEIGHT - BRICK_HEIGHT} value={position} onChange={(event) => moveBrick(index, Number(event.target.value))} />
+              <input id={`brick-${index}`} type="range" min={index % 2 === 0 ? minimumBrickY : positions[index - 1] + BRICK_HEIGHT} max={index % 2 === 0 ? positions[index + 1] - BRICK_HEIGHT : maximumBrickY} value={position} onChange={(event) => moveBrick(index, Number(event.target.value))} />
             </div>
           ))}
           <div className="control-group"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Randstrahlen anzeigen</label></div>
@@ -94,12 +97,12 @@ export default function LightPropagation() {
           <div className="chart-card light-scene">
             <h2>Versuch auf DIN A4</h2>
             <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${sourceY} Millimetern, Öffnungswinkel ${angle} Grad und vier Steinen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
-              <defs><pattern id="light-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern></defs>
+              <defs><pattern id="light-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern><clipPath id="light-paper-clip"><rect width={WIDTH} height={HEIGHT} /></clipPath></defs>
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="light-paper" />
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#light-grid)" />
               {lightOn && <polygon points={points} className="light-beam" />}
               {lightOn && showRays && polygon.slice(1).map((point, index) => <line key={index} x1={source.x} y1={source.y} x2={point.x} y2={point.y} className="light-ray" />)}
-              {bricks.map((brick, index) => <rect key={index} {...brick} className="light-brick" onPointerDown={(event) => startDrag(event, index, brick.y)} />)}
+              <g clipPath="url(#light-paper-clip)">{bricks.map((brick, index) => <rect key={index} {...brick} className="light-brick" onPointerDown={(event) => startDrag(event, index, brick.y)} />)}</g>
               <line x1={WIDTH} y1="0" x2={WIDTH} y2={HEIGHT} className="light-screen" />
               {lightOn && screenSegments.map((segment, index) => <line key={index} x1={WIDTH} y1={segment.from} x2={WIDTH} y2={segment.to} className="light-screen-result" />)}
               <rect x="0" y={sourceY - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, -1, sourceY)} />

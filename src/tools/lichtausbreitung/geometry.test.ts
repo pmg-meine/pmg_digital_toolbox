@@ -25,6 +25,15 @@ describe("light propagation", () => {
     expect(traceRay(source, 0, blocked)).toEqual({ x: 198, y: 105 });
   });
 
+  it("traces rays past bricks extending beyond the paper", () => {
+    const shifted = [
+      { x: 99, y: -70, width: 8, height: 95 },
+      { x: 99, y: 180, width: 8, height: 95 },
+    ];
+    expect(traceRay(source, 0, shifted)).toEqual({ x: 297, y: 105 });
+    expect(traceRay(source, -0.8, shifted).y).toBeGreaterThanOrEqual(0);
+  });
+
   it("includes the source and rays at the opening angle", () => {
     const polygon = lightPolygon(source, 50, []);
     expect(polygon[0]).toEqual(source);
