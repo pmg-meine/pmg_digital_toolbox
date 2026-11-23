@@ -8,3 +8,12 @@
 .light-screen-result { stroke: #c61e78; stroke-width: 3; }
 .light-source { fill: #28202f; cursor: grab; touch-action: none; }
 .light-brick:active, .light-source:active { cursor: grabbing; }
+
+[data-theme="dark"] .light-paper { fill: #211b26; stroke: #a99bb2; }
+[data-theme="dark"] .light-grid-line { stroke: #504557; }
+[data-theme="dark"] .light-beam { fill: #f6c8df; fill-opacity: .35; }
+[data-theme="dark"] .light-ray { stroke: #ff9dce; }
+[data-theme="dark"] .light-brick { fill: #aaa3ad; }
+[data-theme="dark"] .light-screen { stroke: #c0b5c8; }
+[data-theme="dark"] .light-screen-result { stroke: #ff82c0; }
+[data-theme="dark"] .light-source { fill: #e8dfea; }
