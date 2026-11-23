@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import QRCode from "qrcode";
+import { createSetupPdf } from "./exportPdf";
 import { defaultSetup, maximumBrickY, minimumBrickY, randomSetup, readSetup, setupUrl } from "./setup";
 import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH, lightPolygon } from "./geometry";
 import "./light.css";
@@ -72,20 +72,10 @@ export default function LightPropagation() {
     else moveBrick(drag.current.index, value);
   }
 
-  async function exportScene() {
-    const shareUrl = setupUrl(window.location.href, { sourceY, angle, positions });
-    const qr = await QRCode.toString(shareUrl, { type: "svg", errorCorrectionLevel: "M", margin: 4 });
-    const qrContent = qr.replace(/<svg[^>]*>/, (tag) => tag.replace("<svg ", '<svg x="270" y="211" width="24" height="24" '));
-    const brickElements = bricks.map((brick) =>
-      `<rect x="${brick.x}" y="${brick.y}" width="${brick.width}" height="${brick.height}" fill="#d3d3d3" stroke="#777" stroke-width="0.3"/>`,
-    ).join("");
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="235mm" viewBox="0 0 297 235"><defs><pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" fill="none" stroke="#d8d8d8" stroke-width="0.2"/></pattern></defs><rect width="297" height="210" fill="white"/><rect width="297" height="210" fill="url(#grid)"/><rect x="0" y="${sourceY - 5}" width="9" height="10" fill="#222"/>${brickElements}<line x1="296" y1="0" x2="296" y2="210" stroke="#222" stroke-width="2"/><text x="12" y="203" font-family="sans-serif" font-size="4">Lichtquelle · Öffnungswinkel ${angle}° · Schirm rechts</text><rect y="210" width="297" height="25" fill="white"/><text x="12" y="223" font-family="sans-serif" font-size="4">QR-Code scannen und Licht einschalten, um die Vermutung zu überprüfen.</text>${qrContent}</svg>`;
-    const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "lichtausbreitung-versuchsaufbau.svg";
-    link.click();
-    URL.revokeObjectURL(url);
+  function exportScene() {
+    const setup = { sourceY, angle, positions };
+    const shareUrl = setupUrl(window.location.href, setup);
+    createSetupPdf(setup, shareUrl).save("lichtausbreitung-versuchsaufbau.pdf");
   }
 
   return (
@@ -107,7 +97,7 @@ export default function LightPropagation() {
           <div className="button-line">
             <button className="primary-button" onClick={() => setLightOn(!lightOn)}>{lightOn ? "Licht ausschalten" : "Licht einschalten"}</button>
             <button className="secondary-button" onClick={() => { const setup = randomSetup(); setSourceY(setup.sourceY); setAngle(setup.angle); setPositions(setup.positions); setLightOn(false); }}>Zufälliger Aufbau</button>
-            <button className="secondary-button" onClick={exportScene}>Aufbau als SVG speichern</button>
+            <button className="secondary-button" onClick={exportScene}>Aufbau als PDF speichern</button>
             <button className="secondary-button" onClick={() => { setSourceY(defaultSetup.sourceY); setAngle(defaultSetup.angle); setPositions(defaultSetup.positions); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
           </div>
         </div>
@@ -126,7 +116,7 @@ export default function LightPropagation() {
               <rect x="0" y={sourceY - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, -1, sourceY)} />
             </svg>
             <p className="sim-caption">Lichtquelle und Steine ziehen oder mit den Reglern bewegen · Schirm rechts · Steinpositionen von der oberen Blattkante gemessen</p>
-            <p className="sim-caption">Die SVG-Datei zeigt immer den Aufbau ohne Licht. Der QR-Code öffnet denselben Aufbau mit ausgeschaltetem Licht. Zum Ausdrucken im Browser öffnen und Querformat wählen.</p>
+            <p className="sim-caption">Die PDF-Datei zeigt den Aufbau ohne Licht und ist im A4-Querformat druckfertig. QR-Code und Link öffnen denselben Aufbau mit ausgeschaltetem Licht.</p>
           </div>
         </div>
       </div>
