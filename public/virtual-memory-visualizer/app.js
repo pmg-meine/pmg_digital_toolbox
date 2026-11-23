@@ -20,7 +20,7 @@ import { BUILTIN_EXAMPLES, DEFAULT_CONFIG, DEFAULT_SOURCE } from "./examples.js"
     }
     try {
       localStorage.setItem(
-        "java-memory-lab-theme",
+        "virtual-memory-visualizer-theme",
         light ? "light" : "dark",
       );
     } catch {}
@@ -45,7 +45,7 @@ import { BUILTIN_EXAMPLES, DEFAULT_CONFIG, DEFAULT_SOURCE } from "./examples.js"
     } catch {}
     let saved = null;
     try {
-      saved = localStorage.getItem("java-memory-lab-theme");
+      saved = localStorage.getItem("virtual-memory-visualizer-theme");
     } catch {}
     const preferred =
       saved ||
@@ -395,7 +395,7 @@ import { BUILTIN_EXAMPLES, DEFAULT_CONFIG, DEFAULT_SOURCE } from "./examples.js"
     validate(cfg);
     step = Math.min(step, cfg.states.length - 1);
     cells = [];
-    $("title").textContent = cfg.title || "Java Memory Lab";
+    $("title").textContent = cfg.title || "Virtual Memory Visualizer";
     $("subtitle").textContent = cfg.subtitle || "";
     $("model-note").textContent =
       cfg.modelNote || "Undefined words are 0x00000000.";

@@ -1,6 +1,6 @@
-# Java Memory Lab
+# Virtual Memory Visualizer
 
-Java Memory Lab is a small, self-contained teaching tool for visualizing a deliberately simplified memory model for introductory Java programming.
+Virtual Memory Visualizer is a small, self-contained teaching tool for visualizing a deliberately simplified memory model for introductory Java programming.
 
 The project is intended for classroom use. Its main purpose is to help students answer questions such as:
 

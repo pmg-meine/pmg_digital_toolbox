@@ -1,4 +1,4 @@
-JAVA MEMORY LAB - JSON CONFIGURATION SPECIFICATION
+VIRTUAL MEMORY VISUALIZER - JSON CONFIGURATION SPECIFICATION
 =================================================
 
 Purpose
@@ -19,7 +19,7 @@ inherits values from a previous state and no change/delta calculation is needed.
 Canonical JSON structure
 ========================
 {
-  "title": "Java Memory Lab",
+  "title": "Virtual Memory Visualizer",
   "subtitle": "Optional subtitle",
   "modelNote": "Optional note about the teaching model",
 

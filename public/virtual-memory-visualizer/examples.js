@@ -30,7 +30,7 @@ export const BUILTIN_EXAMPLES = [
 
 export const DEFAULT_SOURCE = `public class Main {\n    public static void main(String[] args) {\n        int number = 10;\n        Person person = new Person(20);\n        int result = modify(number, person);\n    }\n\n    static int modify(int x, Person p) {\n        x = x + 5;\n        p.age = p.age + 5;\n        return x;\n    }\n}\n\nclass Person {\n    int age;\n    Person(int age) { this.age = age; }\n}`;
 export const DEFAULT_CONFIG = {
-  title: "Java Memory Lab",
+  title: "Virtual Memory Visualizer",
   subtitle: "32-bit word-addressed teaching model",
   modelNote:
     "Simplified model: one visible memory cell equals one complete 32-bit word. Static/class variables use their own region; objects live on the heap; locals and parameters live on the stack.",
