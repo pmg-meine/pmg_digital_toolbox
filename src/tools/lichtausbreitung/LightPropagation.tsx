@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import { createSetupPdf } from "./exportPdf";
+import { createExercisePdf, createSetupPdf } from "./exportPdf";
 import { defaultSetup, maximumBrickY, minimumBrickY, randomSetup, readSetup, setupUrl } from "./setup";
 import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH, lightPolygon } from "./geometry";
 import "./light.css";
@@ -11,6 +11,8 @@ export default function LightPropagation() {
   const [positions, setPositions] = useState(initialSetup.positions);
   const [lightOn, setLightOn] = useState(false);
   const [showRays, setShowRays] = useState(false);
+  const [exerciseCount, setExerciseCount] = useState("5");
+  const validExerciseCount = /^\d+$/.test(exerciseCount) && Number(exerciseCount) >= 1 && Number(exerciseCount) <= 50;
   useEffect(() => {
     window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, positions }));
   }, [sourceY, angle, positions]);
@@ -78,6 +80,11 @@ export default function LightPropagation() {
     createSetupPdf(setup, shareUrl).save("lichtausbreitung-versuchsaufbau.pdf");
   }
 
+  function generateExercises() {
+    const setups = Array.from({ length: Number(exerciseCount) }, () => randomSetup());
+    createExercisePdf(setups, window.location.href).save("lichtausbreitung-aufgaben.pdf");
+  }
+
   return (
     <div className="sim-content">
       <div className="sim-topline"><span className="sim-eyebrow">OPTIK</span><span className="sim-note">Vermuten, zeichnen, überprüfen</span></div>
@@ -100,6 +107,13 @@ export default function LightPropagation() {
             <button className="secondary-button" onClick={exportScene}>Aufbau als PDF speichern</button>
             <button className="secondary-button" onClick={() => { setSourceY(defaultSetup.sourceY); setAngle(defaultSetup.angle); setPositions(defaultSetup.positions); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
           </div>
+          <h2>Aufgabenblätter erstellen</h2>
+          <p>Erzeuge zufällige Versuchsaufbauten zum Ausdrucken und Überprüfen.</p>
+          <div className="control-group">
+            <label htmlFor="exercise-count">Anzahl der Blätter (1–50)</label>
+            <input id="exercise-count" type="number" min="1" max="50" step="1" value={exerciseCount} onChange={(event) => setExerciseCount(event.target.value)} />
+          </div>
+          <button className="secondary-button" type="button" disabled={!validExerciseCount} onClick={generateExercises}>Aufgaben als PDF erzeugen</button>
         </div>
         <div className="sim-display">
           <div className="chart-card light-scene">

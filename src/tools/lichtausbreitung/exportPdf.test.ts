@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createSetupPdf } from "./exportPdf";
+import { createExercisePdf, createSetupPdf } from "./exportPdf";
 import { defaultSetup, setupUrl } from "./setup";
 
 describe("printable light setup", () => {
@@ -13,5 +13,18 @@ describe("printable light setup", () => {
     expect(pdf.getNumberOfPages()).toBe(1);
     expect(output).toContain("/Subtype /Link");
     expect(output).toContain(url);
+  });
+
+  it("creates one page and a matching link for each exercise", () => {
+    const baseUrl = "https://example.org/tools/lichtausbreitung";
+    const setups = [defaultSetup, { ...defaultSetup, sourceY: 80, angle: 40 }];
+    const pdf = createExercisePdf(setups, baseUrl);
+    const output = pdf.output();
+
+    expect(pdf.getNumberOfPages()).toBe(2);
+    for (const setup of setups) {
+      expect(output).toContain(setupUrl(baseUrl, setup));
+    }
+    expect(output.match(/\/Subtype \/Link/g)?.length).toBeGreaterThanOrEqual(2);
   });
 });

@@ -1,11 +1,25 @@
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH } from "./geometry";
-import type { Setup } from "./setup";
+import { setupUrl, type Setup } from "./setup";
 
 // Vector graphics keep the grid and QR code sharp when printed.
 export function createSetupPdf(setup: Setup, shareUrl: string): jsPDF {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  drawSetupPage(pdf, setup, shareUrl);
+  return pdf;
+}
+
+export function createExercisePdf(setups: Setup[], baseUrl: string): jsPDF {
+  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  setups.forEach((setup, index) => {
+    if (index > 0) pdf.addPage();
+    drawSetupPage(pdf, setup, setupUrl(baseUrl, setup));
+  });
+  return pdf;
+}
+
+function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
   const left = 27;
   const top = 7;
   const scale = 0.82;
@@ -63,5 +77,4 @@ export function createSetupPdf(setup: Setup, shareUrl: string): jsPDF {
     pdf.text(line, 10, lineY);
     pdf.link(10, lineY - 2.5, pdf.getTextWidth(line), 3, { url: shareUrl });
   });
-  return pdf;
 }
