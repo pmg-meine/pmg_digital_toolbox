@@ -18,6 +18,19 @@ export type Tool = {
 // The catalog is the single source of truth: add an entry when adding a tool.
 export const tools: Tool[] = [
   {
+    slug: "lichtausbreitung",
+    component: lazy(() => import("../tools/lichtausbreitung/LightPropagation")),
+    title: "Lichtausbreitung",
+    subject: "Physik",
+    description: "Lichtstrahlen und Schatten zwischen verschiebbaren Hindernissen untersuchen.",
+    grades: "Jg. 6",
+    tags: ["Licht", "Ausbreitung", "Labyrinth", "Lichtstrahlen", "Schatten", "Optik"],
+    learningGoal: "Die geradlinige Ausbreitung von Licht und die Entstehung von Schatten untersuchen.",
+    exampleActivity: "Zeichne vor dem Einschalten deine Vermutung ein und vergleiche sie mit dem Licht auf dem Schirm.",
+    badge: "Simulation",
+    icon: "☀",
+  },
+  {
     slug: "lichtquellen-lokalisieren",
     component: lazy(() => import("../tools/lichtquellen-lokalisieren/CaveLight")),
     title: "Lichtquellen lokalisieren",

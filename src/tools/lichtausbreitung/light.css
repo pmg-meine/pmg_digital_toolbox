@@ -1,0 +1,6 @@
+.light-scene svg { display: block; width: 100%; height: auto; }
+.light-paper { fill: #fff; stroke: #51485a; stroke-width: 1; }
+.light-beam { fill: #f6c526; fill-opacity: .48; }
+.light-brick { fill: #a59280; stroke: #40352d; stroke-width: 1; }
+.light-screen { stroke: #40352d; stroke-width: 2; }
+.light-source { fill: #28202f; }
