@@ -4,4 +4,4 @@
 
 The toolbox serves the standalone application locally. Integration changes adapt its colors and synchronize its theme with the toolbox when embedded; standalone use retains its own theme switch. The visualizer uses predefined memory snapshots and does not execute Java.
 
-The application markup, styles, behavior, and built-in examples live in `index.html`, `styles.css`, `app.js`, and `examples.js`, respectively. The snapshot format is documented in `CONFIGURATION.md`.
+The application markup, styles, behavior, and built-in example registry live in `index.html`, `styles.css`, `app.js`, and `examples.js`, respectively. Individual examples live in the `examples/` directory. The snapshot format is documented in `CONFIGURATION.md`.

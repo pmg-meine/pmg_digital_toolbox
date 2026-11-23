@@ -1,3 +1,5 @@
+import { BUILTIN_EXAMPLES, DEFAULT_CONFIG, DEFAULT_SOURCE } from "./examples.js";
+
 (() => {
   "use strict";
   const $ = (id) => document.getElementById(id);
