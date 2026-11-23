@@ -1,6 +1,10 @@
 .light-scene svg { display: block; width: 100%; height: auto; }
 .light-paper { fill: #fff; stroke: #51485a; stroke-width: 1; }
-.light-beam { fill: #f6c526; fill-opacity: .48; }
-.light-brick { fill: #a59280; stroke: #40352d; stroke-width: 1; }
+.light-grid-line { fill: none; stroke: #d8d8d8; stroke-width: .2; }
+.light-beam { fill: #f6c8df; fill-opacity: .7; }
+.light-ray { stroke: #bd347a; stroke-width: .45; pointer-events: none; }
+.light-brick { fill: #d3d3d3; cursor: grab; touch-action: none; }
 .light-screen { stroke: #40352d; stroke-width: 2; }
-.light-source { fill: #28202f; }
+.light-screen-result { stroke: #c61e78; stroke-width: 3; }
+.light-source { fill: #28202f; cursor: grab; touch-action: none; }
+.light-brick:active, .light-source:active { cursor: grabbing; }
