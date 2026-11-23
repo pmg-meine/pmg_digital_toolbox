@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Virtual Memory Visualizer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Toggle sidebar"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+      <div
+        class="rail-examples"
+        id="rail-examples"
+        aria-label="Quick examples"
+      ></div>
+      <input
+        id="source-input"
+        type="file"
+        accept=".java,text/plain"
+        hidden
+      /><input
+        id="config-input"
+        type="file"
+        accept=".json,application/json"
+        hidden
+      />
+      <div class="sidebar-top">
+        <div class="sidebar-heading">Load files</div>
+        <div class="load-row">
+          <button class="btn" id="load-source">Load Java…</button
+          ><span class="file" id="source-name">built-in example</span>
+        </div>
+        <div class="load-row">
+          <button class="btn" id="load-config">Load JSON…</button
+          ><span class="file" id="config-name">embedded example</span>
+        </div>
+        <div class="sidebar-heading">Examples</div>
+        <div class="example-list" id="example-list"></div>
+      </div>
+      <div class="sidebar-settings">
+        <button
+          class="btn"
+          id="theme-toggle"
+          type="button"
+          aria-pressed="false"
+        >
+          ☀ Light mode
+        </button>
+        <label class="setting-row"
+          >Word format
+          <select id="format">
+            <option value="hex">Hex</option>
+            <option value="dec">Decimal</option>
+            <option value="bin">Binary</option>
+          </select></label
+        >
+      </div>
+    </aside>
+    <div class="app-content" id="app-content">
+      <header class="page">
+        <div>
+          <h1 id="title">Virtual Memory Visualizer</h1>
+          <p class="sub" id="subtitle">Source file + explicit memory states</p>
+        </div>
+        <span class="badge">32-bit word-addressed model</span>
+      </header>
+      <main>
+        <div class="nav-toolbar">
+          <button class="btn" id="prev">← Back</button
+          ><button class="btn primary" id="next">Next →</button
+          ><span class="counter" id="counter"></span>
+        </div>
+        <div class="error" id="error"></div>
+        <div class="layout">
+          <section class="card">
+            <header><h2>Java source</h2></header>
+            <div class="code" id="code"></div>
+          </section>
+          <section class="card">
+            <header>
+              <h2>
+                Virtual memory
+                <span class="small">· one cell = one 32-bit word</span>
+              </h2>
+            </header>
+            <div class="memory">
+              <div class="memory-mode">
+                <button
+                  class="btn"
+                  id="split-memory"
+                  type="button"
+                  aria-pressed="false"
+                >
+                  Separate memory regions
+                </button>
+              </div>
+              <div
+                class="collision-notice"
+                id="collision-notice"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+              <div class="memory-groups" id="memory-groups">
+                <div class="memory-group" data-region="static">
+                  <div class="section-head">
+                    <h3>
+                      Static / Class Data
+                      <span class="chip" id="static-range"></span>
+                    </h3>
+                    <span class="small" id="static-used"></span>
+                  </div>
+                  <div class="scroll">
+                    <div class="grid" id="static-grid"></div>
+                  </div>
+                </div>
+                <div class="memory-group" data-region="heap">
+                  <div class="section-head">
+                    <h3>Heap <span class="chip" id="heap-range"></span></h3>
+                    <span class="small" id="heap-used"></span>
+                  </div>
+                  <div class="scroll">
+                    <div class="grid" id="heap-grid"></div>
+                  </div>
+                </div>
+                <div class="memory-group" data-region="stack">
+                  <div class="section-head">
+                    <h3>Stack <span class="chip" id="stack-range"></span></h3>
+                    <span class="small" id="stack-used"></span>
+                  </div>
+                  <div class="scroll">
+                    <div class="grid" id="stack-grid"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="legend">
+                <span
+                  ><i
+                    style="background: var(--static); color: var(--static-text)"
+                  ></i
+                  >Static / class data</span
+                ><span
+                  ><i
+                    style="background: var(--heap); color: var(--heap-text)"
+                  ></i
+                  >Heap block</span
+                ><span
+                  ><i
+                    style="background: var(--stack); color: var(--stack-text)"
+                  ></i
+                  >Stack block</span
+                ><span
+                  ><i
+                    style="
+                      background: var(--sel);
+                      color: var(--selection-border);
+                    "
+                  ></i
+                  >Selected</span
+                ><span
+                  ><i
+                    style="
+                      background: var(--target);
+                      color: var(--target-border);
+                    "
+                  ></i
+                  >Referenced block</span
+                >
+              </div>
+              <div id="model-note" hidden aria-hidden="true"></div>
+            </div>
+          </section>
+          <aside class="note-infrastructure" aria-hidden="true">
+            <div id="note-line"></div>
+            <div id="note"></div>
+          </aside>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

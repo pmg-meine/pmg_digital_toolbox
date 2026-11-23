@@ -25,6 +25,7 @@ describe("toolbox routes", () => {
       "ohmsches-gesetz",
       "stack-container",
       "abstract-datatype-visualizer",
+      "virtual-memory-visualizer",
       "bruchteile",
     ]);
     expect(new Set(tools.map((tool) => tool.slug)).size).toBe(tools.length);
