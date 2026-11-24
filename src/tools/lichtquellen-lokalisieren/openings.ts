@@ -5,8 +5,8 @@ export interface Opening { side: OpeningSide; center: number }
 export function generateOpenings(): Opening[] {
   const sides: OpeningSide[] = ["north", "south", "west", "east"];
   const openings = sides.flatMap((side) => [
-    { side, center: -4.6 + Math.random() * 3.45 },
-    { side, center: 1.15 + Math.random() * 3.45 },
+    { side, center: Math.round((-4.6 + Math.random() * 3.45) * 1000) / 1000 },
+    { side, center: Math.round((1.15 + Math.random() * 3.45) * 1000) / 1000 },
   ]);
 
   for (let index = openings.length - 1; index > 0; index -= 1) {
