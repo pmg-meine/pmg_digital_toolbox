@@ -1,9 +1,9 @@
 .light-scene > svg { display: block; width: 100%; height: auto; }
-.light-scene-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.light-scene-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .light-scene-header h2 { margin: 0; }
 .light-scene-actions { display: flex; flex: none; gap: 10px; }
-.light-icon-button { display: grid; place-items: center; width: 44px; min-height: 44px; padding: 10px; }
-.light-icon-button svg { display: block; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.light-icon-button { display: grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px; min-height: 44px; padding: 10px; }
+.light-scene .light-icon-button svg { display: block; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .light-share-message { margin: 0; color: var(--muted); font-size: 13px; }
 .light-share-message:empty { display: none; }
 .light-exercise-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
