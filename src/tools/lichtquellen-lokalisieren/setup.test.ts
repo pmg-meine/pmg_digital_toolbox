@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createExercisePdf } from "./exportPdf";
+import { createExercisePdf, createSetupPdf } from "./exportPdf";
 import { randomSetup, readSetup, setupUrl } from "./setup";
 
 describe("cave setup links and exercises", () => {
@@ -15,6 +15,16 @@ describe("cave setup links and exercises", () => {
     expect(readSetup("?setup=broken")).toBeNull();
     const setup = { ...randomSetup(), count: 99 };
     expect(readSetup(new URL(setupUrl("https://example.org/", setup)).search)).toBeNull();
+  });
+
+  it("exports the current configuration with its shareable link", () => {
+    const setup = { ...randomSetup(), hidden: false };
+    const baseUrl = "https://example.org/tool";
+    const pdf = createSetupPdf(setup, baseUrl);
+    const content = pdf.output();
+    expect(pdf.getNumberOfPages()).toBe(1);
+    expect(content).toContain(setupUrl(baseUrl, setup));
+    expect(content).toContain("schalte das Licht ein.");
   });
 
   it("creates one printable page and configuration link per exercise", () => {

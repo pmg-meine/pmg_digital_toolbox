@@ -2,6 +2,10 @@ import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import { setupUrl, type Setup } from "./setup";
 
+export function createSetupPdf(setup: Setup, baseUrl: string): jsPDF {
+  return createExercisePdf([setup], baseUrl);
+}
+
 export function createExercisePdf(setups: Setup[], baseUrl: string): jsPDF {
   const pdf = new jsPDF({ unit: "mm", format: "a4" });
   setups.forEach((setup, index) => {
@@ -53,8 +57,11 @@ export function createExercisePdf(setups: Setup[], baseUrl: string): jsPDF {
     pdf.text(`Ansicht=${setup.view}, Quelle verborgen=${setup.hidden ? "ja" : "nein"}, Strahlen=${setup.showRays ? "ja" : "nein"}`, 15, 221);
     const openingText = setup.openings.map((opening) => `${opening.side}: ${opening.center.toFixed(3)}`).join("; ");
     pdf.text(pdf.splitTextToSize(`Öffnungen (Reihenfolge): ${openingText}`, 150), 15, 226);
-    pdf.setTextColor(0, 0, 180);
-    pdf.textWithLink("Konfiguration öffnen", 15, 245, { url });
+    pdf.setTextColor(0, 0, 200);
+    const linkWidth = pdf.textWithLink("Lösung: Klicke hier oder scanne den QR-Code und schalte das Licht ein.", 15, 245, { url });
+    pdf.setDrawColor(0, 0, 200);
+    pdf.setLineWidth(0.15);
+    pdf.line(15, 245.7, 15 + linkWidth, 245.7);
     const qr = QRCode.create(url, { errorCorrectionLevel: "M" });
     const moduleSize = 35 / (qr.modules.size + 8);
     pdf.setFillColor(0, 0, 0);

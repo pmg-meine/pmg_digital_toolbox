@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { createExercisePdf } from "./exportPdf";
+import { createExercisePdf, createSetupPdf } from "./exportPdf";
 import { generateOpenings } from "./openings";
 import { randomSetup, readSetup, setupUrl, type Setup } from "./setup";
 import { createCaveScene } from "./caveScene";
+import "../lichtausbreitung/light.css";
 import "./cave.css";
 
 type Scene = ReturnType<typeof createCaveScene>;
@@ -85,8 +86,10 @@ export default function CaveLight() {
             <label><input type="radio" name="cave-view" value="perspective" checked={view === "perspective"} onChange={() => setView("perspective")} /><span>3D</span></label>
           </div>
         </fieldset>
-        <div className="control-group cave-checkbox"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Lichtstrahlen in der Höhle anzeigen</label></div>
-        <div className="control-group cave-checkbox"><label><input type="checkbox" checked={hidden} onChange={(event) => setHidden(event.target.checked)} /> Lichtquelle und Licht in der Höhle ausblenden</label></div>
+        <div className="light-switches">
+          <label className="light-switch"><span><span aria-hidden="true">☀</span> Lichtstrahlen in der Höhle anzeigen</span><input type="checkbox" role="switch" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /></label>
+          <label className="light-switch"><span><span aria-hidden="true">💡</span> Lichtquelle und Licht in der Höhle anzeigen</span><input type="checkbox" role="switch" checked={!hidden} onChange={(event) => setHidden(!event.target.checked)} /></label>
+        </div>
         {!hidden && <><p>Verschiebe die Lichtquelle in der Ansicht oder mit den Reglern.</p>{(["x", "y"] as const).map((axis) => <div className="control-group" key={axis}><label htmlFor={`cave-${axis}`}>Position {axis.toUpperCase()} <strong>{source[axis].toFixed(1)}</strong></label><input id={`cave-${axis}`} type="range" min="-4.2" max="4.2" step="0.1" value={source[axis]} onChange={(event) => setSource({ ...source, [axis]: Number(event.target.value) })} /></div>)}
         <div className="control-group"><label htmlFor="cave-height">Höhe der Lichtquelle <strong>{height.toFixed(1)}</strong></label><input id="cave-height" type="range" min="0.6" max="2.5" step="0.1" value={height} onChange={(event) => setHeight(Number(event.target.value))} /></div></>}
         <div className="cave-camera-controls" role="group" aria-label="Kamera steuern">
@@ -105,15 +108,16 @@ export default function CaveLight() {
 
         </div>
         <h2>Aufgabenblätter erstellen</h2>
-        <div className="control-group"><label htmlFor="cave-exercise-count">Anzahl der Blätter (1–50)</label>
-          <input id="cave-exercise-count" type="number" min="1" max="50" step="1" value={exerciseCount} onChange={(event) => setExerciseCount(event.target.value)} />
-          <button className="secondary-button" type="button" disabled={!/^\d+$/.test(exerciseCount) || Number(exerciseCount) < 1 || Number(exerciseCount) > 50} onClick={() => createExercisePdf(Array.from({ length: Number(exerciseCount) }, () => ({ ...randomSetup(), count })), window.location.href).save("lichtquellen-aufgaben.pdf")}>PDF erzeugen</button>
+        <div className="control-group light-exercise-generator"><label htmlFor="cave-exercise-count">Anzahl der Blätter (1–50)</label>
+          <div className="light-exercise-actions"><input id="cave-exercise-count" type="number" min="1" max="50" step="1" value={exerciseCount} onChange={(event) => setExerciseCount(event.target.value)} />
+          <button className="secondary-button" type="button" disabled={!/^\d+$/.test(exerciseCount) || Number(exerciseCount) < 1 || Number(exerciseCount) > 50} onClick={() => createExercisePdf(Array.from({ length: Number(exerciseCount) }, () => ({ ...randomSetup(), count })), window.location.href).save("lichtquellen-aufgaben.pdf")}>PDF erzeugen</button></div>
         </div>
       </div>
       <div className="sim-display cave-display">
         <div className="cave-viewport"><div className="cave-scene-actions">
-          <button className="secondary-button cave-icon-button" type="button" onClick={() => scene.current?.download()} aria-label="Bild herunterladen" title="Bild herunterladen">↓</button>
-          <button className="secondary-button cave-icon-button" type="button" onClick={share} aria-label="Link kopieren" title="Link kopieren">↗</button>
+          <button className="secondary-button cave-icon-button" type="button" onClick={() => scene.current?.download()} aria-label="Bild herunterladen" title="Bild herunterladen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3" /></svg></button>
+          <button className="secondary-button cave-icon-button" type="button" onClick={() => createSetupPdf(setup, window.location.href).save("lichtquellen-versuchsaufbau.pdf")} aria-label="Aufbau als PDF speichern" title="Aufbau als PDF speichern"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10l4 4v14H5z M15 3v5h4" /><text x="7" y="17">PDF</text></svg></button>
+          <button className="secondary-button cave-icon-button" type="button" onClick={share} aria-label="Link kopieren" title="Link kopieren"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7l-1.6 1.6M14 11a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 0 0 5.7 5.7l1.6-1.6" /></svg></button>
         </div><canvas ref={canvas} role="img" aria-label={`${view === "orthographic" ? "Draufsicht" : "3D-Ansicht"} der Höhle mit ${count} Öffnungen${hidden ? "; Lichtquelle verborgen" : `; Lichtquelle bei X ${source.x.toFixed(1)}, Y ${source.y.toFixed(1)}`}`} /></div>
         <p role="status">{shareMessage}</p>
         {view === "perspective" && <p>In der 3D-Ansicht kannst du die Höhle mit Ziehen drehen und mit dem Mausrad oder zwei Fingern zoomen.</p>}
