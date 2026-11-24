@@ -31,5 +31,5 @@ export function setupUrl(url: string, setup: ShadowSetup): string {
 
 export function randomSetup(): ShadowSetup {
   const random = (min: number, max: number) => Math.round(min + Math.random() * (max - min));
-  return { sourceYs: [random(30, 90), random(120, 180)], angles: [random(40, 90), random(40, 90)], brick: { x: random(90, 190), y: random(45, 120), width: random(5, 20), height: random(30, 70) }, enabled: [false, false], showRays: false };
+  return { sourceYs: [random(30, 90), random(120, 180)], angles: [random(40, 90), random(40, 90)], brick: { x: random(90, 190), y: random(45, 120), width: 25, height: 25 }, enabled: [false, false], showRays: false };
 }
