@@ -91,18 +91,18 @@ export default function LightPropagation() {
       <div className="sim-columns">
         <div className="sim-control-panel">
           <h2>Versuchsaufbau</h2>
-          <details className="control-group light-parameter-controls"><summary>Taschenlampe</summary><label htmlFor="light-source">Lichtquelle von oben <strong>{sourceY} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={sourceY} onChange={(event) => setSourceY(Number(event.target.value))} />
-          <label htmlFor="light-angle">Öffnungswinkel <strong>{angle}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></details>
+          <details className="control-group light-parameter-controls"><summary>Taschenlampe</summary><label htmlFor="light-source">Position Y <strong>{(HEIGHT - sourceY).toFixed(1)} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={HEIGHT - sourceY} onChange={(event) => setSourceY(HEIGHT - Number(event.target.value))} />
+          <label htmlFor="light-angle">Öffnungswinkel <strong>{angle.toFixed(1)}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></details>
           {brickParameters.map((brick, index) => {
             const bounds = brickCenterBounds(brickParameters, index);
             const name = `Klotz ${String.fromCharCode(65 + index)}`;
             return <details className="control-group light-parameter-controls" key={index}>
               <summary>{name}</summary>
-              <label htmlFor={`brick-${index}`}>Position Y <strong>{brick.centerY} mm</strong></label>
-              <input id={`brick-${index}`} type="range" min={bounds.min} max={bounds.max} step="0.5" value={brick.centerY} onChange={(event) => updateBrick(index, { centerY: Number(event.target.value) })} />
-              <label htmlFor={`brick-width-${index}`}>Breite <strong>{brick.width} mm</strong></label>
+              <label htmlFor={`brick-${index}`}>Position Y <strong>{(HEIGHT - brick.centerY).toFixed(1)} mm</strong></label>
+              <input id={`brick-${index}`} type="range" min={HEIGHT - bounds.max} max={HEIGHT - bounds.min} step="0.5" value={HEIGHT - brick.centerY} onChange={(event) => updateBrick(index, { centerY: HEIGHT - Number(event.target.value) })} />
+              <label htmlFor={`brick-width-${index}`}>Breite <strong>{brick.width.toFixed(1)} mm</strong></label>
               <input id={`brick-width-${index}`} type="range" min={minimumBrickSize} max={maximumBrickWidth} value={brick.width} onChange={(event) => updateBrick(index, { width: Number(event.target.value) })} />
-              <label htmlFor={`brick-height-${index}`}>Höhe <strong>{brick.height} mm</strong></label>
+              <label htmlFor={`brick-height-${index}`}>Höhe <strong>{brick.height.toFixed(1)} mm</strong></label>
               <input id={`brick-height-${index}`} type="range" min={minimumBrickSize} max={maximumBrickHeight} value={brick.height} onChange={(event) => updateBrick(index, { height: Number(event.target.value) })} />
             </details>;
           })}
@@ -124,7 +124,7 @@ export default function LightPropagation() {
         <div className="sim-display">
           <div className="chart-card light-scene">
             <h2>Versuch auf DIN A4</h2>
-            <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${sourceY} Millimetern, Öffnungswinkel ${angle} Grad und vier Klötzen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
+            <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${HEIGHT - sourceY} Millimetern von unten, Öffnungswinkel ${angle} Grad und vier Klötzen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
               <defs><pattern id="light-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern><clipPath id="light-paper-clip"><rect width={WIDTH} height={HEIGHT} /></clipPath></defs>
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="light-paper" />
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#light-grid)" />
@@ -150,11 +150,11 @@ export default function LightPropagation() {
                 <line x1="4.5" y1={sourceY - 2} x2="4.5" y2={sourceY + 2} />
               </g>
               <g className="light-axes" aria-hidden="true">
-                <path d="M 276 193 H 288 M 285 190 L 288 193 L 285 196 M 276 193 V 205 M 273 202 L 276 205 L 279 202" />
-                <text x="290" y="194">x</text><text x="275" y="209">y</text>
+                <path d="M 9 200 H 21 M 18 197 L 21 200 L 18 203 M 9 200 V 188 M 6 191 L 9 188 L 12 191" />
+                <text x="23" y="201">x</text><text x="8" y="186">y</text>
               </g>
             </svg>
-            <p className="sim-caption">Lichtquelle und Klötze ziehen oder mit den Reglern bewegen · Schirm rechts · Klotzmitten von der oberen Blattkante gemessen</p>
+            <p className="sim-caption">Lichtquelle und Klötze ziehen oder mit den Reglern bewegen · Schirm rechts · Y-Positionen von der unteren Blattkante gemessen</p>
             <p className="sim-caption">Die PDF-Datei zeigt den Aufbau ohne Licht und ist im A4-Querformat druckfertig. QR-Code und Link öffnen denselben Aufbau mit ausgeschaltetem Licht.</p>
           </div>
         </div>

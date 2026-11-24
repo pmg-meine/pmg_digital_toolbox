@@ -64,16 +64,16 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
   pdf.line(x(4.5), y(setup.sourceY - 2), x(4.5), y(setup.sourceY + 2));
   pdf.setDrawColor(81, 72, 90);
   pdf.setLineWidth(0.4);
-  pdf.line(x(276), y(193), x(288), y(193));
-  pdf.line(x(285), y(190), x(288), y(193));
-  pdf.line(x(288), y(193), x(285), y(196));
-  pdf.line(x(276), y(193), x(276), y(205));
-  pdf.line(x(273), y(202), x(276), y(205));
-  pdf.line(x(276), y(205), x(279), y(202));
+  pdf.line(x(9), y(200), x(21), y(200));
+  pdf.line(x(18), y(197), x(21), y(200));
+  pdf.line(x(21), y(200), x(18), y(203));
+  pdf.line(x(9), y(200), x(9), y(188));
+  pdf.line(x(6), y(191), x(9), y(188));
+  pdf.line(x(9), y(188), x(12), y(191));
   pdf.setTextColor(81, 72, 90);
   pdf.setFontSize(9);
-  pdf.text("x", x(290), y(194));
-  pdf.text("y", x(275), y(209));
+  pdf.text("x", x(23), y(201));
+  pdf.text("y", x(8), y(186));
   pdf.setDrawColor(34, 34, 34);
   pdf.setLineWidth(1.6);
   pdf.line(x(WIDTH), y(0), x(WIDTH), y(HEIGHT));
@@ -100,8 +100,8 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
   pdf.line(10, 185.7, 10 + linkWidth, 185.7);
   pdf.setTextColor(34, 34, 34);
   pdf.setFontSize(7);
-  pdf.text(`Parameter: Lichtquelle y=${setup.sourceY}, Öffnungswinkel=${setup.angle}°`, 10, 191);
+  pdf.text(`Parameter: Lichtquelle y=${(HEIGHT - setup.sourceY).toFixed(1)}, Öffnungswinkel=${setup.angle.toFixed(1)}°`, 10, 191);
   setup.bricks.forEach((brick, index) => {
-    pdf.text(`Klotz ${String.fromCharCode(65 + index)}: Mitte y=${brick.centerY}, Breite=${brick.width}, Höhe=${brick.height} mm`, 10 + (index % 2) * 110, 195 + Math.floor(index / 2) * 4);
+    pdf.text(`Klotz ${String.fromCharCode(65 + index)}: Mitte y=${(HEIGHT - brick.centerY).toFixed(1)}, Breite=${brick.width.toFixed(1)}, Höhe=${brick.height.toFixed(1)} mm`, 10 + (index % 2) * 110, 195 + Math.floor(index / 2) * 4);
   });
 }
