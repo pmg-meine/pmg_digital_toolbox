@@ -1,11 +1,33 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import LightPropagation from "./LightPropagation";
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
+  vi.restoreAllMocks();
   window.history.replaceState(null, "", "/");
+});
+
+it("coalesces rapid position changes into one URL update with the final setup", () => {
+  vi.useFakeTimers();
+  const replaceState = vi.spyOn(window.history, "replaceState");
+  const { container } = render(<LightPropagation />);
+  const slider = container.querySelector<HTMLInputElement>("#brick-0")!;
+
+  for (let value = 100; value < 150; value++) {
+    fireEvent.change(slider, { target: { value: String(value) } });
+    act(() => vi.advanceTimersByTime(10));
+  }
+
+  expect(replaceState).not.toHaveBeenCalled();
+  act(() => vi.advanceTimersByTime(500));
+  expect(replaceState).toHaveBeenCalledTimes(1);
+  const sharedUrl = new URL(window.location.href);
+  expect(sharedUrl.search).not.toBe("");
+  const { container: restored } = render(<LightPropagation />);
+  expect(restored.querySelector<HTMLInputElement>("#brick-0")!.value).toBe(slider.value);
 });
 
 describe("brick position controls", () => {

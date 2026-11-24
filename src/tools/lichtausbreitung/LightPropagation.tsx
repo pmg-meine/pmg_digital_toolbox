@@ -15,7 +15,12 @@ export default function LightPropagation() {
   const [shareMessage, setShareMessage] = useState("");
   const validExerciseCount = /^\d+$/.test(exerciseCount) && Number(exerciseCount) >= 1 && Number(exerciseCount) <= 50;
   useEffect(() => {
-    window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, bricks: brickParameters }));
+    // WebKit limits how often history can be updated. Pointer moves can easily
+    // exceed that limit, so update the address after the controls settle.
+    const timeout = window.setTimeout(() => {
+      window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, bricks: brickParameters }));
+    }, 500);
+    return () => window.clearTimeout(timeout);
   }, [sourceY, angle, brickParameters]);
 
   useEffect(() => {
