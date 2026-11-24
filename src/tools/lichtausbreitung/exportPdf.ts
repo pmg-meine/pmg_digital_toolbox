@@ -31,7 +31,6 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
   for (let gridX = 0; gridX <= WIDTH; gridX += 5) pdf.line(x(gridX), y(0), x(gridX), y(HEIGHT));
   for (let gridY = 0; gridY <= HEIGHT; gridY += 5) pdf.line(x(0), y(gridY), x(WIDTH), y(gridY));
 
-  pdf.setFillColor(211, 211, 211);
   pdf.setDrawColor(119, 119, 119);
   pdf.setLineWidth(0.2);
   sceneBricks(setup).forEach((brick, index) => {
@@ -39,6 +38,8 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
     const visibleBottom = Math.min(HEIGHT, brick.y + brick.height);
     const brickLeft = x(brick.x);
     const brickRight = x(brick.x + brick.width);
+    // Text drawing changes the PDF fill color, so restore it for every brick.
+    pdf.setFillColor(211, 211, 211);
     pdf.rect(brickLeft, y(visibleTop), brick.width * scale, (visibleBottom - visibleTop) * scale, "F");
     pdf.line(brickLeft, y(visibleTop), brickLeft, y(visibleBottom));
     pdf.line(brickRight, y(visibleTop), brickRight, y(visibleBottom));
