@@ -24,6 +24,7 @@ describe("toolbox routes", () => {
       "lichtausbreitung",
       "lichtquellen-lokalisieren",
       "ohmsches-gesetz",
+      "hamming-code",
       "stack-container",
       "abstract-datatype-visualizer",
       "virtual-memory-visualizer",
