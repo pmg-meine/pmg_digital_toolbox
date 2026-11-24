@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
-import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH } from "./geometry";
-import { setupUrl, type Setup } from "./setup";
+import { HEIGHT, WIDTH } from "./geometry";
+import { sceneBricks, setupUrl, type Setup } from "./setup";
 
 // Vector graphics keep the grid and QR code sharp when printed.
 export function createSetupPdf(setup: Setup, shareUrl: string): jsPDF {
@@ -34,17 +34,16 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
   pdf.setFillColor(211, 211, 211);
   pdf.setDrawColor(119, 119, 119);
   pdf.setLineWidth(0.2);
-  setup.positions.forEach((position, index) => {
-    const visibleTop = Math.max(0, position);
-    const visibleBottom = Math.min(HEIGHT, position + BRICK_HEIGHT);
-    pdf.rect(x(LEVELS[Math.floor(index / 2)]), y(visibleTop), BRICK_WIDTH * scale, (visibleBottom - visibleTop) * scale, "F");
-    // Only draw actual brick edges, not artificial edges at the paper boundary.
-    const brickLeft = x(LEVELS[Math.floor(index / 2)]);
-    const brickRight = brickLeft + BRICK_WIDTH * scale;
+  sceneBricks(setup).forEach((brick) => {
+    const visibleTop = Math.max(0, brick.y);
+    const visibleBottom = Math.min(HEIGHT, brick.y + brick.height);
+    const brickLeft = x(brick.x);
+    const brickRight = x(brick.x + brick.width);
+    pdf.rect(brickLeft, y(visibleTop), brick.width * scale, (visibleBottom - visibleTop) * scale, "F");
     pdf.line(brickLeft, y(visibleTop), brickLeft, y(visibleBottom));
     pdf.line(brickRight, y(visibleTop), brickRight, y(visibleBottom));
-    if (position >= 0) pdf.line(brickLeft, y(position), brickRight, y(position));
-    if (position + BRICK_HEIGHT <= HEIGHT) pdf.line(brickLeft, y(position + BRICK_HEIGHT), brickRight, y(position + BRICK_HEIGHT));
+    if (brick.y >= 0) pdf.line(brickLeft, y(brick.y), brickRight, y(brick.y));
+    if (brick.y + brick.height <= HEIGHT) pdf.line(brickLeft, y(brick.y + brick.height), brickRight, y(brick.y + brick.height));
   });
   pdf.setFillColor(34, 34, 34);
   pdf.rect(x(0), y(setup.sourceY - 5), 9 * scale, 10 * scale, "F");
@@ -75,5 +74,7 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
   pdf.setTextColor(34, 34, 34);
   pdf.setFontSize(7);
   pdf.text(`Parameter: Lichtquelle y=${setup.sourceY}, Öffnungswinkel=${setup.angle}°`, 10, 191);
-  pdf.text(`Steine (Oberkante y, von oben): Ebene 1=${setup.positions[0]}, ${setup.positions[1]}; Ebene 2=${setup.positions[2]}, ${setup.positions[3]}`, 10, 195);
+  setup.bricks.forEach((brick, index) => {
+    pdf.text(`Stein ${index + 1}: Mitte y=${brick.centerY}, Breite=${brick.width}, Höhe=${brick.height} mm`, 10 + (index % 2) * 110, 195 + Math.floor(index / 2) * 4);
+  });
 }

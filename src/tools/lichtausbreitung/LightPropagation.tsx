@@ -1,28 +1,28 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { createExercisePdf, createSetupPdf } from "./exportPdf";
-import { defaultSetup, maximumBrickY, minimumBrickY, randomSetup, readSetup, setupUrl } from "./setup";
-import { BRICK_HEIGHT, BRICK_WIDTH, HEIGHT, LEVELS, WIDTH, lightPolygon } from "./geometry";
+import { brickCenterBounds, defaultSetup, maximumBrickHeight, maximumBrickWidth, minimumBrickSize, randomSetup, readSetup, sceneBricks, setupUrl, type BrickParameters } from "./setup";
+import { HEIGHT, WIDTH, lightPolygon } from "./geometry";
 import "./light.css";
 
 export default function LightPropagation() {
   const [initialSetup] = useState(() => readSetup(window.location.search));
   const [sourceY, setSourceY] = useState(initialSetup.sourceY);
   const [angle, setAngle] = useState(initialSetup.angle);
-  const [positions, setPositions] = useState(initialSetup.positions);
+  const [brickParameters, setBrickParameters] = useState(initialSetup.bricks);
   const [lightOn, setLightOn] = useState(false);
   const [showRays, setShowRays] = useState(false);
   const [exerciseCount, setExerciseCount] = useState("5");
   const validExerciseCount = /^\d+$/.test(exerciseCount) && Number(exerciseCount) >= 1 && Number(exerciseCount) <= 50;
   useEffect(() => {
-    window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, positions }));
-  }, [sourceY, angle, positions]);
+    window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, bricks: brickParameters }));
+  }, [sourceY, angle, brickParameters]);
 
   useEffect(() => {
     function restoreSetup() {
       const setup = readSetup(window.location.search);
       setSourceY(setup.sourceY);
       setAngle(setup.angle);
-      setPositions(setup.positions);
+      setBrickParameters(setup.bricks);
       setLightOn(false);
     }
     window.addEventListener("popstate", restoreSetup);
@@ -31,9 +31,7 @@ export default function LightPropagation() {
 
   const drag = useRef<{ index: number; offset: number } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const bricks = positions.map((y, index) => ({
-    x: LEVELS[Math.floor(index / 2)], y, width: BRICK_WIDTH, height: BRICK_HEIGHT,
-  }));
+  const bricks = sceneBricks({ sourceY, angle, bricks: brickParameters });
   const source = { x: 9, y: sourceY };
   const polygon = lightPolygon(source, angle, bricks);
   const points = polygon.map((point) => `${point.x},${point.y}`).join(" ");
@@ -43,11 +41,12 @@ export default function LightPropagation() {
       ? [{ from: point.y, to: next.y }] : [];
   });
 
-  function moveBrick(index: number, value: number) {
-    setPositions((current) => {
-      const minimum = index % 2 === 0 ? minimumBrickY : current[index - 1] + BRICK_HEIGHT;
-      const maximum = index % 2 === 0 ? current[index + 1] - BRICK_HEIGHT : maximumBrickY;
-      return current.map((position, i) => i === index ? Math.round(Math.max(minimum, Math.min(maximum, value))) : position);
+  function updateBrick(index: number, changes: Partial<BrickParameters>) {
+    setBrickParameters((current) => {
+      const updated = current.map((brick, i) => i === index ? { ...brick, ...changes } : brick);
+      const bounds = brickCenterBounds(updated, index);
+      updated[index].centerY = Math.max(bounds.min, Math.min(bounds.max, updated[index].centerY));
+      return updated;
     });
   }
 
@@ -71,11 +70,11 @@ export default function LightPropagation() {
     if (!drag.current) return;
     const value = pointerY(event) - drag.current.offset;
     if (drag.current.index === -1) setSourceY(Math.round(Math.max(5, Math.min(HEIGHT - 5, value))));
-    else moveBrick(drag.current.index, value);
+    else updateBrick(drag.current.index, { centerY: Math.round(value * 2) / 2 });
   }
 
   function exportScene() {
-    const setup = { sourceY, angle, positions };
+    const setup = { sourceY, angle, bricks: brickParameters };
     const shareUrl = setupUrl(window.location.href, setup);
     createSetupPdf(setup, shareUrl).save("lichtausbreitung-versuchsaufbau.pdf");
   }
@@ -94,18 +93,24 @@ export default function LightPropagation() {
           <h2>Versuchsaufbau</h2>
           <div className="control-group"><label htmlFor="light-source">Lichtquelle von oben <strong>{sourceY} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={sourceY} onChange={(event) => setSourceY(Number(event.target.value))} /></div>
           <div className="control-group"><label htmlFor="light-angle">Öffnungswinkel <strong>{angle}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></div>
-          {positions.map((position, index) => (
-            <div className="control-group" key={index}>
-              <label htmlFor={`brick-${index}`}>Stein {Math.floor(index / 2) + 1} {index % 2 === 0 ? "oben" : "unten"} <strong>{position} mm</strong></label>
-              <input id={`brick-${index}`} type="range" min={index % 2 === 0 ? minimumBrickY : positions[index - 1] + BRICK_HEIGHT} max={index % 2 === 0 ? positions[index + 1] - BRICK_HEIGHT : maximumBrickY} value={position} onChange={(event) => moveBrick(index, Number(event.target.value))} />
-            </div>
-          ))}
+          {brickParameters.map((brick, index) => {
+            const bounds = brickCenterBounds(brickParameters, index);
+            const name = `Stein ${Math.floor(index / 2) + 1} ${index % 2 === 0 ? "oben" : "unten"}`;
+            return <div className="control-group" key={index}>
+              <label htmlFor={`brick-${index}`}>{name}, Mitte von oben <strong>{brick.centerY} mm</strong></label>
+              <input id={`brick-${index}`} type="range" min={bounds.min} max={bounds.max} step="0.5" value={brick.centerY} onChange={(event) => updateBrick(index, { centerY: Number(event.target.value) })} />
+              <label htmlFor={`brick-width-${index}`}>{name}, Breite <strong>{brick.width} mm</strong></label>
+              <input id={`brick-width-${index}`} type="range" min={minimumBrickSize} max={maximumBrickWidth} value={brick.width} onChange={(event) => updateBrick(index, { width: Number(event.target.value) })} />
+              <label htmlFor={`brick-height-${index}`}>{name}, Höhe <strong>{brick.height} mm</strong></label>
+              <input id={`brick-height-${index}`} type="range" min={minimumBrickSize} max={maximumBrickHeight} value={brick.height} onChange={(event) => updateBrick(index, { height: Number(event.target.value) })} />
+            </div>;
+          })}
           <div className="control-group"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Randstrahlen anzeigen</label></div>
           <div className="button-line">
             <button className="primary-button" onClick={() => setLightOn(!lightOn)}>{lightOn ? "Licht ausschalten" : "Licht einschalten"}</button>
-            <button className="secondary-button" onClick={() => { const setup = randomSetup(); setSourceY(setup.sourceY); setAngle(setup.angle); setPositions(setup.positions); setLightOn(false); }}>Zufälliger Aufbau</button>
+            <button className="secondary-button" onClick={() => { const setup = randomSetup(); setSourceY(setup.sourceY); setAngle(setup.angle); setBrickParameters(setup.bricks); setLightOn(false); }}>Zufälliger Aufbau</button>
             <button className="secondary-button" onClick={exportScene}>Aufbau als PDF speichern</button>
-            <button className="secondary-button" onClick={() => { setSourceY(defaultSetup.sourceY); setAngle(defaultSetup.angle); setPositions(defaultSetup.positions); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
+            <button className="secondary-button" onClick={() => { setSourceY(defaultSetup.sourceY); setAngle(defaultSetup.angle); setBrickParameters(defaultSetup.bricks); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
           </div>
           <h2>Aufgabenblätter erstellen</h2>
           <p>Erzeuge zufällige Versuchsaufbauten zum Ausdrucken und Überprüfen.</p>
@@ -124,12 +129,12 @@ export default function LightPropagation() {
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#light-grid)" />
               {lightOn && <polygon points={points} className="light-beam" />}
               {lightOn && showRays && polygon.slice(1).map((point, index) => <line key={index} x1={source.x} y1={source.y} x2={point.x} y2={point.y} className="light-ray" />)}
-              <g clipPath="url(#light-paper-clip)">{bricks.map((brick, index) => <rect key={index} {...brick} className="light-brick" onPointerDown={(event) => startDrag(event, index, brick.y)} />)}</g>
+              <g clipPath="url(#light-paper-clip)">{bricks.map((brick, index) => <rect key={index} {...brick} className="light-brick" onPointerDown={(event) => startDrag(event, index, brickParameters[index].centerY)} />)}</g>
               <line x1={WIDTH} y1="0" x2={WIDTH} y2={HEIGHT} className="light-screen" />
               {lightOn && screenSegments.map((segment, index) => <line key={index} x1={WIDTH} y1={segment.from} x2={WIDTH} y2={segment.to} className="light-screen-result" />)}
               <rect x="0" y={sourceY - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, -1, sourceY)} />
             </svg>
-            <p className="sim-caption">Lichtquelle und Steine ziehen oder mit den Reglern bewegen · Schirm rechts · Steinpositionen von der oberen Blattkante gemessen</p>
+            <p className="sim-caption">Lichtquelle und Steine ziehen oder mit den Reglern bewegen · Schirm rechts · Steinmitten von der oberen Blattkante gemessen</p>
             <p className="sim-caption">Die PDF-Datei zeigt den Aufbau ohne Licht und ist im A4-Querformat druckfertig. QR-Code und Link öffnen denselben Aufbau mit ausgeschaltetem Licht.</p>
           </div>
         </div>
