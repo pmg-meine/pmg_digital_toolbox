@@ -137,13 +137,19 @@ export default function LightPropagation() {
           </div>
         </div>
         <div className="sim-display">
-          <div className="light-scene-actions">
-            <button className="secondary-button" type="button" onClick={exportScene}>Aufbau als PDF speichern</button>
-            <button className="secondary-button" type="button" onClick={shareScene}>Link kopieren</button>
-          </div>
-          <p className="light-share-message" role="status">{shareMessage}</p>
           <div className="chart-card light-scene">
-            <h2>Versuch auf DIN A4</h2>
+            <div className="light-scene-header">
+              <h2>Versuch auf DIN A4</h2>
+              <div className="light-scene-actions">
+                <button className="secondary-button light-icon-button" type="button" onClick={exportScene} aria-label="Aufbau als PDF speichern" title="Aufbau als PDF speichern">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3" /></svg>
+                </button>
+                <button className="secondary-button light-icon-button" type="button" onClick={shareScene} aria-label="Link kopieren" title="Link kopieren">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7l-1.6 1.6M14 11a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 0 0 5.7 5.7l1.6-1.6" /></svg>
+                </button>
+              </div>
+            </div>
+            <p className="light-share-message" role="status">{shareMessage}</p>
             <p>Stelle den Versuch ein und exportiere den unbeleuchteten Aufbau. Zeichne deine Vermutung ein und schalte danach das Licht an.</p>
             <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${HEIGHT - sourceY} Millimetern von unten, Öffnungswinkel ${angle} Grad und vier Klötzen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
               <defs><pattern id="light-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern><clipPath id="light-paper-clip"><rect width={WIDTH} height={HEIGHT} /></clipPath></defs>
