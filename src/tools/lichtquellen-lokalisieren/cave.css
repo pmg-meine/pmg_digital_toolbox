@@ -99,6 +99,10 @@
   gap: 0.5rem;
 }
 
+.cave-actions + h2 {
+  margin-top: 1.5rem;
+}
+
 .cave-actions button {
   flex: 1 1 0;
   min-width: 0;
