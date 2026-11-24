@@ -112,6 +112,7 @@ export default function ShadowSimulation() {
           <span>💡 Taschenlampe {index + 1} einschalten</span>
           <input type="checkbox" role="switch" checked={enabled[index]} onChange={(event) => setEnabled(index, event.target.checked)} />
         </label>)}<label className="light-switch"><span>☀ Randstrahlen anzeigen</span><input type="checkbox" role="switch" checked={showRays} onChange={(event) => setSetup({ ...setup, showRays: event.target.checked })} /></label></div>
+        <button className="secondary-button" onClick={() => setSetup(randomSetup())}>Zufällige Aufgabe</button>
         {sources.map((source, index) => <details className="control-group light-parameter-controls" key={index}>
           <summary>Taschenlampe {index + 1}</summary>
           <label htmlFor={`shadow-source-${index}`}>Position Y <strong>{HEIGHT - source.y} mm</strong></label>
