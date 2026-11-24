@@ -66,9 +66,13 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
     }
   }
 
-  pdf.setTextColor(34, 34, 34);
+  pdf.setTextColor(0, 0, 200);
   pdf.setFontSize(9);
-  pdf.textWithLink("Lösung: Klicke hier oder scanne den QR-Code und schalte das Licht ein.", 10, 185, { url: shareUrl });
+  const linkWidth = pdf.textWithLink("Lösung: Klicke hier oder scanne den QR-Code und schalte das Licht ein.", 10, 185, { url: shareUrl });
+  pdf.setDrawColor(0, 0, 200);
+  pdf.setLineWidth(0.15);
+  pdf.line(10, 185.7, 10 + linkWidth, 185.7);
+  pdf.setTextColor(34, 34, 34);
   pdf.setFontSize(7);
   pdf.text(`Parameter: Lichtquelle y=${setup.sourceY}, Öffnungswinkel=${setup.angle}°`, 10, 191);
   pdf.text(`Steine (Oberkante y, von oben): Ebene 1=${setup.positions[0]}, ${setup.positions[1]}; Ebene 2=${setup.positions[2]}, ${setup.positions[3]}`, 10, 195);
