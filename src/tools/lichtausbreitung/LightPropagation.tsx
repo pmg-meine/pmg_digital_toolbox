@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { createExercisePdf, createSetupPdf } from "./exportPdf";
-import { brickCenterBounds, defaultSetup, maximumBrickHeight, maximumBrickWidth, minimumBrickSize, randomSetup, readSetup, sceneBricks, setupUrl, type BrickParameters } from "./setup";
+import { brickCenterBounds, maximumBrickHeight, maximumBrickWidth, minimumBrickSize, randomSetup, readSetup, sceneBricks, setupUrl, type BrickParameters } from "./setup";
 import { HEIGHT, WIDTH, lightPolygon } from "./geometry";
 import "./light.css";
 
@@ -91,6 +91,17 @@ export default function LightPropagation() {
       <div className="sim-columns">
         <div className="sim-control-panel">
           <h2>Versuchsaufbau</h2>
+          <div className="light-switches">
+            <label className="light-switch">
+              <span><span aria-hidden="true">💡</span> Licht einschalten</span>
+              <input type="checkbox" role="switch" checked={lightOn} onChange={(event) => setLightOn(event.target.checked)} />
+            </label>
+            <label className="light-switch">
+              <span><span aria-hidden="true">☀</span> Randstrahlen anzeigen</span>
+              <input type="checkbox" role="switch" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} />
+            </label>
+            <button className="secondary-button" onClick={() => { const setup = randomSetup(); setSourceY(setup.sourceY); setAngle(setup.angle); setBrickParameters(setup.bricks); setLightOn(false); }}>Zufälliger Aufbau</button>
+          </div>
           <details className="control-group light-parameter-controls"><summary>Taschenlampe</summary><label htmlFor="light-source">Position Y <strong>{(HEIGHT - sourceY).toFixed(1)} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={HEIGHT - sourceY} onChange={(event) => setSourceY(HEIGHT - Number(event.target.value))} />
           <label htmlFor="light-angle">Öffnungswinkel <strong>{angle.toFixed(1)}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></details>
           {brickParameters.map((brick, index) => {
@@ -106,12 +117,8 @@ export default function LightPropagation() {
               <input id={`brick-height-${index}`} type="range" min={minimumBrickSize} max={maximumBrickHeight} value={brick.height} onChange={(event) => updateBrick(index, { height: Number(event.target.value) })} />
             </details>;
           })}
-          <div className="control-group"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Randstrahlen anzeigen</label></div>
           <div className="button-line">
-            <button className="primary-button" onClick={() => setLightOn(!lightOn)}>{lightOn ? "Licht ausschalten" : "Licht einschalten"}</button>
-            <button className="secondary-button" onClick={() => { const setup = randomSetup(); setSourceY(setup.sourceY); setAngle(setup.angle); setBrickParameters(setup.bricks); setLightOn(false); }}>Zufälliger Aufbau</button>
             <button className="secondary-button" onClick={exportScene}>Aufbau als PDF speichern</button>
-            <button className="secondary-button" onClick={() => { setSourceY(defaultSetup.sourceY); setAngle(defaultSetup.angle); setBrickParameters(defaultSetup.bricks); setLightOn(false); setShowRays(false); }}>Zurücksetzen</button>
           </div>
           <h2>Aufgabenblätter erstellen</h2>
           <p>Erzeuge zufällige Versuchsaufbauten zum Ausdrucken und Überprüfen.</p>
