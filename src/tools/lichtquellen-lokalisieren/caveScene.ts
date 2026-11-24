@@ -564,8 +564,8 @@ return {
     }
     controls.update();
   },
-  randomizeOpenings() {
-    openingLayout = generateOpenings();
+  setOpenings(layout: Opening[]) {
+    openingLayout = layout;
     updateOpenings(Number(inputs.holeCount.value));
   },
   download() {
