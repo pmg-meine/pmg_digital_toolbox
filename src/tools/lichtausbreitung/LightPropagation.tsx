@@ -91,18 +91,18 @@ export default function LightPropagation() {
       <div className="sim-columns">
         <div className="sim-control-panel">
           <h2>Versuchsaufbau</h2>
-          <div className="control-group"><label htmlFor="light-source">Lichtquelle von oben <strong>{sourceY} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={sourceY} onChange={(event) => setSourceY(Number(event.target.value))} /></div>
-          <div className="control-group"><label htmlFor="light-angle">Öffnungswinkel <strong>{angle}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></div>
+          <details className="control-group light-parameter-controls"><summary>Taschenlampe</summary><label htmlFor="light-source">Lichtquelle von oben <strong>{sourceY} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={sourceY} onChange={(event) => setSourceY(Number(event.target.value))} />
+          <label htmlFor="light-angle">Öffnungswinkel <strong>{angle}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></details>
           {brickParameters.map((brick, index) => {
             const bounds = brickCenterBounds(brickParameters, index);
             const name = `Klotz ${String.fromCharCode(65 + index)}`;
-            return <details className="control-group light-brick-controls" key={index}>
+            return <details className="control-group light-parameter-controls" key={index}>
               <summary>{name}</summary>
-              <label htmlFor={`brick-${index}`}>{name}, Mitte von oben <strong>{brick.centerY} mm</strong></label>
+              <label htmlFor={`brick-${index}`}>Position Y <strong>{brick.centerY} mm</strong></label>
               <input id={`brick-${index}`} type="range" min={bounds.min} max={bounds.max} step="0.5" value={brick.centerY} onChange={(event) => updateBrick(index, { centerY: Number(event.target.value) })} />
-              <label htmlFor={`brick-width-${index}`}>{name}, Breite <strong>{brick.width} mm</strong></label>
+              <label htmlFor={`brick-width-${index}`}>Breite <strong>{brick.width} mm</strong></label>
               <input id={`brick-width-${index}`} type="range" min={minimumBrickSize} max={maximumBrickWidth} value={brick.width} onChange={(event) => updateBrick(index, { width: Number(event.target.value) })} />
-              <label htmlFor={`brick-height-${index}`}>{name}, Höhe <strong>{brick.height} mm</strong></label>
+              <label htmlFor={`brick-height-${index}`}>Höhe <strong>{brick.height} mm</strong></label>
               <input id={`brick-height-${index}`} type="range" min={minimumBrickSize} max={maximumBrickHeight} value={brick.height} onChange={(event) => updateBrick(index, { height: Number(event.target.value) })} />
             </details>;
           })}
@@ -138,13 +138,21 @@ export default function LightPropagation() {
                   <g className="light-brick-marker" aria-hidden="true">
                     <line x1={centerX - 2} y1={centerY} x2={centerX + 2} y2={centerY} />
                     <line x1={centerX} y1={centerY - 2} x2={centerX} y2={centerY + 2} />
-                    <text x={centerX + 3} y={Math.max(4, Math.min(HEIGHT - 1, centerY - 3))}>{String.fromCharCode(65 + index)}</text>
+                    <text x={centerX} y={Math.max(4, Math.min(HEIGHT - 1, centerY - 3))} textAnchor="middle">{String.fromCharCode(65 + index)}</text>
                   </g>
                 </g>;
               })}</g>
               <line x1={WIDTH} y1="0" x2={WIDTH} y2={HEIGHT} className="light-screen" />
               {lightOn && screenSegments.map((segment, index) => <line key={index} x1={WIDTH} y1={segment.from} x2={WIDTH} y2={segment.to} className="light-screen-result" />)}
               <rect x="0" y={sourceY - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, -1, sourceY)} />
+              <g className="light-source-marker" aria-hidden="true">
+                <line x1="2.5" y1={sourceY} x2="6.5" y2={sourceY} />
+                <line x1="4.5" y1={sourceY - 2} x2="4.5" y2={sourceY + 2} />
+              </g>
+              <g className="light-axes" aria-hidden="true">
+                <path d="M 276 193 H 288 M 285 190 L 288 193 L 285 196 M 276 193 V 205 M 273 202 L 276 205 L 279 202" />
+                <text x="290" y="194">x</text><text x="275" y="209">y</text>
+              </g>
             </svg>
             <p className="sim-caption">Lichtquelle und Klötze ziehen oder mit den Reglern bewegen · Schirm rechts · Klotzmitten von der oberen Blattkante gemessen</p>
             <p className="sim-caption">Die PDF-Datei zeigt den Aufbau ohne Licht und ist im A4-Querformat druckfertig. QR-Code und Link öffnen denselben Aufbau mit ausgeschaltetem Licht.</p>

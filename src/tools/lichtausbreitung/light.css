@@ -22,6 +22,14 @@
 .light-brick-group:active { cursor: grabbing; }
 .light-brick-marker { pointer-events: none; stroke: #29232c; stroke-width: .4; }
 .light-brick-marker text { fill: #29232c; stroke: none; font-size: 4px; font-weight: bold; }
-.light-brick-controls summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
+.light-parameter-controls summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
 [data-theme="dark"] .light-brick-marker { stroke: #211b26; }
 [data-theme="dark"] .light-brick-marker text { fill: #211b26; }
+
+.light-parameter-controls { border: 1px solid #f6c8df; border-radius: 8px; padding: 0 12px 8px; }
+.light-source-marker { pointer-events: none; stroke: #fff; stroke-width: .5; }
+[data-theme="dark"] .light-source-marker { stroke: #211b26; }
+.light-axes { pointer-events: none; fill: none; stroke: #51485a; stroke-width: .5; }
+.light-axes text { fill: #51485a; stroke: none; font-size: 4px; }
+[data-theme="dark"] .light-axes { stroke: #e8dfea; }
+[data-theme="dark"] .light-axes text { fill: #e8dfea; }

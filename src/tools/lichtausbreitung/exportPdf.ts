@@ -54,10 +54,26 @@ function drawSetupPage(pdf: jsPDF, setup: Setup, shareUrl: string) {
     }
     pdf.setTextColor(41, 35, 44);
     pdf.setFontSize(9);
-    pdf.text(String.fromCharCode(65 + index), x(centerX + 3), y(Math.max(4, Math.min(HEIGHT - 1, centerY - 3))));
+    pdf.text(String.fromCharCode(65 + index), x(centerX), y(Math.max(4, Math.min(HEIGHT - 1, centerY - 3))), { align: "center" });
   });
   pdf.setFillColor(34, 34, 34);
   pdf.rect(x(0), y(setup.sourceY - 5), 9 * scale, 10 * scale, "F");
+  pdf.setDrawColor(255, 255, 255);
+  pdf.setLineWidth(0.4);
+  pdf.line(x(2.5), y(setup.sourceY), x(6.5), y(setup.sourceY));
+  pdf.line(x(4.5), y(setup.sourceY - 2), x(4.5), y(setup.sourceY + 2));
+  pdf.setDrawColor(81, 72, 90);
+  pdf.setLineWidth(0.4);
+  pdf.line(x(276), y(193), x(288), y(193));
+  pdf.line(x(285), y(190), x(288), y(193));
+  pdf.line(x(288), y(193), x(285), y(196));
+  pdf.line(x(276), y(193), x(276), y(205));
+  pdf.line(x(273), y(202), x(276), y(205));
+  pdf.line(x(276), y(205), x(279), y(202));
+  pdf.setTextColor(81, 72, 90);
+  pdf.setFontSize(9);
+  pdf.text("x", x(290), y(194));
+  pdf.text("y", x(275), y(209));
   pdf.setDrawColor(34, 34, 34);
   pdf.setLineWidth(1.6);
   pdf.line(x(WIDTH), y(0), x(WIDTH), y(HEIGHT));
