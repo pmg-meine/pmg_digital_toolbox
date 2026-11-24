@@ -22,3 +22,12 @@ describe("shadow projection", () => {
     expect(shadowOnScreen({ x: 0, y: 205 }, { ...brick, y: 0 })).toEqual([0, 0]);
   });
 });
+
+describe("limited light cones", () => {
+  it("distinguishes darkness outside a beam from a blocked beam", async () => {
+    const { beamScreenSegments } = await import("./geometry");
+    const segments = beamScreenSegments([{ point: { x: 9, y: 105 }, angle: 10 }], brick);
+    expect(segments[0]).toMatchObject({ illuminatedBy: 0, blockedBy: 0 });
+    expect(segments.some((segment) => segment.blockedBy === 1)).toBe(true);
+  });
+});

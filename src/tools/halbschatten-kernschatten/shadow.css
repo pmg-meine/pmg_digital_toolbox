@@ -8,3 +8,7 @@
 [data-theme="dark"] .shadow-screen-1 { stroke: #ff82c0; }
 [data-theme="dark"] .shadow-screen-2 { stroke: #ffe4f2; }
 [data-theme="dark"] .shadow-source-label { fill: #211b26; }
+.shadow-canvas { position: relative; }
+.shadow-canvas > svg { display: block; width: 100%; height: auto; }
+.shadow-actions { position: absolute; top: 8px; right: 8px; z-index: 1; }
+.shadow-region-label { fill: #28202f; font-size: 4px; font-weight: bold; paint-order: stroke; stroke: white; stroke-width: 1px; stroke-linejoin: round; pointer-events: none; }
