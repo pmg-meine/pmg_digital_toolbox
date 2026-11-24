@@ -12,6 +12,7 @@ export default function LightPropagation() {
   const [lightOn, setLightOn] = useState(false);
   const [showRays, setShowRays] = useState(false);
   const [exerciseCount, setExerciseCount] = useState("5");
+  const [shareMessage, setShareMessage] = useState("");
   const validExerciseCount = /^\d+$/.test(exerciseCount) && Number(exerciseCount) >= 1 && Number(exerciseCount) <= 50;
   useEffect(() => {
     window.history.replaceState(window.history.state, "", setupUrl(window.location.href, { sourceY, angle, bricks: brickParameters }));
@@ -79,6 +80,16 @@ export default function LightPropagation() {
     createSetupPdf(setup, shareUrl).save("lichtausbreitung-versuchsaufbau.pdf");
   }
 
+  async function shareScene() {
+    const url = setupUrl(window.location.href, { sourceY, angle, bricks: brickParameters });
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareMessage("Link kopiert.");
+    } catch {
+      setShareMessage("Link konnte nicht kopiert werden. Bitte kopiere die Adresse aus der Adressleiste.");
+    }
+  }
+
   function generateExercises() {
     const setups = Array.from({ length: Number(exerciseCount) }, () => randomSetup());
     createExercisePdf(setups, window.location.href).save("lichtausbreitung-aufgaben.pdf");
@@ -87,7 +98,6 @@ export default function LightPropagation() {
   return (
     <div className="sim-content">
       <div className="sim-topline"><span className="sim-eyebrow">OPTIK</span><span className="sim-note">Vermuten, zeichnen, überprüfen</span></div>
-      <p>Stelle den Versuch ein und exportiere den unbeleuchteten Aufbau. Zeichne deine Vermutung ein und schalte danach das Licht an.</p>
       <div className="sim-columns">
         <div className="sim-control-panel">
           <h2>Versuchsaufbau</h2>
@@ -117,20 +127,24 @@ export default function LightPropagation() {
               <input id={`brick-height-${index}`} type="range" min={minimumBrickSize} max={maximumBrickHeight} value={brick.height} onChange={(event) => updateBrick(index, { height: Number(event.target.value) })} />
             </details>;
           })}
-          <div className="button-line">
-            <button className="secondary-button" onClick={exportScene}>Aufbau als PDF speichern</button>
-          </div>
           <h2>Aufgabenblätter erstellen</h2>
-          <p>Erzeuge zufällige Versuchsaufbauten zum Ausdrucken und Überprüfen.</p>
-          <div className="control-group">
+          <div className="control-group light-exercise-generator">
             <label htmlFor="exercise-count">Anzahl der Blätter (1–50)</label>
-            <input id="exercise-count" type="number" min="1" max="50" step="1" value={exerciseCount} onChange={(event) => setExerciseCount(event.target.value)} />
+            <div className="light-exercise-actions">
+              <input id="exercise-count" type="number" min="1" max="50" step="1" value={exerciseCount} onChange={(event) => setExerciseCount(event.target.value)} />
+              <button className="secondary-button" type="button" disabled={!validExerciseCount} onClick={generateExercises}>PDF erzeugen</button>
+            </div>
           </div>
-          <button className="secondary-button" type="button" disabled={!validExerciseCount} onClick={generateExercises}>Aufgaben als PDF erzeugen</button>
         </div>
         <div className="sim-display">
+          <div className="light-scene-actions">
+            <button className="secondary-button" type="button" onClick={exportScene}>Aufbau als PDF speichern</button>
+            <button className="secondary-button" type="button" onClick={shareScene}>Link kopieren</button>
+          </div>
+          <p className="light-share-message" role="status">{shareMessage}</p>
           <div className="chart-card light-scene">
             <h2>Versuch auf DIN A4</h2>
+            <p>Stelle den Versuch ein und exportiere den unbeleuchteten Aufbau. Zeichne deine Vermutung ein und schalte danach das Licht an.</p>
             <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${HEIGHT - sourceY} Millimetern von unten, Öffnungswinkel ${angle} Grad und vier Klötzen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
               <defs><pattern id="light-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern><clipPath id="light-paper-clip"><rect width={WIDTH} height={HEIGHT} /></clipPath></defs>
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="light-paper" />

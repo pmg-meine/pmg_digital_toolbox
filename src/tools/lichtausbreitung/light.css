@@ -1,4 +1,9 @@
 .light-scene svg { display: block; width: 100%; height: auto; }
+.light-scene-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+.light-share-message { margin: 0; color: var(--muted); font-size: 13px; }
+.light-share-message:empty { display: none; }
+.light-exercise-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.light-exercise-actions input { width: 80px; min-height: 44px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface, transparent); color: inherit; }
 .light-switches { display: grid; gap: 8px; margin-bottom: 16px; }
 .light-switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; cursor: pointer; }
 .light-switch input { appearance: none; flex: none; width: 48px; height: 28px; margin: 8px 0; border: 2px solid #777; border-radius: 14px; background: #ddd; cursor: pointer; }
