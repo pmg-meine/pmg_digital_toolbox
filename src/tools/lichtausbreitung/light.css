@@ -1,0 +1,55 @@
+.light-scene > svg { display: block; width: 100%; height: auto; }
+.light-scene-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.light-scene-header h2 { margin: 0; }
+.light-scene-actions { display: flex; flex: none; gap: 10px; }
+.light-icon-button { display: grid; place-items: center; box-sizing: border-box; width: 36px; height: 36px; min-height: 36px; padding: 8px; }
+.light-scene .light-icon-button svg { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media (pointer: coarse) { .light-icon-button { width: 44px; height: 44px; min-height: 44px; } }
+.light-share-message { margin: 0; color: var(--muted); font-size: 13px; }
+.light-share-message:empty { display: none; }
+.light-exercise-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.light-exercise-actions input { width: 100%; min-width: 0; min-height: 44px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface, transparent); color: inherit; }
+.light-switches { display: grid; gap: 8px; margin-bottom: 16px; }
+.light-switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; cursor: pointer; }
+.light-switch input { appearance: none; flex: none; width: 48px; height: 28px; margin: 8px 0; border: 2px solid #777; border-radius: 14px; background: #ddd; cursor: pointer; }
+.light-switch input::before { content: ""; display: block; width: 20px; height: 20px; margin: 2px; border-radius: 50%; background: #51485a; transition: transform .15s; }
+.light-switch input:checked { background: #a8276b; border-color: #a8276b; }
+.light-switch input:checked::before { background: #fff; transform: translateX(20px); }
+.light-switch input:focus-visible { outline: 3px solid #b23c80; outline-offset: 3px; }
+[data-theme="dark"] .light-switch input:not(:checked) { background: #504557; border-color: #c0b5c8; }
+[data-theme="dark"] .light-switch input:not(:checked)::before { background: #fff; }
+@media (prefers-reduced-motion: reduce) { .light-switch input::before { transition: none; } }
+.light-paper { fill: #fff; stroke: #51485a; stroke-width: 1; }
+.light-grid-line { fill: none; stroke: #d8d8d8; stroke-width: .2; }
+.light-beam { fill: #f6c8df; fill-opacity: .7; }
+.light-ray { stroke: #bd347a; stroke-width: .45; pointer-events: none; }
+.light-brick { fill: #d3d3d3; stroke: #777; stroke-width: .3; cursor: grab; touch-action: none; }
+.light-screen { stroke: #40352d; stroke-width: 2; }
+.light-screen-result { stroke: #c61e78; stroke-width: 3; }
+.light-source { fill: #28202f; cursor: grab; touch-action: none; }
+.light-brick:active, .light-source:active { cursor: grabbing; }
+
+[data-theme="dark"] .light-paper { fill: #211b26; stroke: #a99bb2; }
+[data-theme="dark"] .light-grid-line { stroke: #504557; }
+[data-theme="dark"] .light-beam { fill: #f6c8df; fill-opacity: .35; }
+[data-theme="dark"] .light-ray { stroke: #ff9dce; }
+[data-theme="dark"] .light-brick { fill: #aaa3ad; stroke: #e0d8e3; }
+[data-theme="dark"] .light-screen { stroke: #c0b5c8; }
+[data-theme="dark"] .light-screen-result { stroke: #ff82c0; }
+[data-theme="dark"] .light-source { fill: #e8dfea; }
+
+.light-brick-group { cursor: grab; touch-action: none; }
+.light-brick-group:active { cursor: grabbing; }
+.light-brick-marker { pointer-events: none; stroke: #29232c; stroke-width: .4; }
+.light-brick-marker text { fill: #29232c; stroke: none; font-size: 4px; font-weight: bold; }
+.light-parameter-controls summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
+[data-theme="dark"] .light-brick-marker { stroke: #211b26; }
+[data-theme="dark"] .light-brick-marker text { fill: #211b26; }
+
+.light-parameter-controls { border: 1px solid #f6c8df; border-radius: 8px; padding: 0 12px 8px; }
+.light-source-marker { pointer-events: none; stroke: #fff; stroke-width: .5; }
+[data-theme="dark"] .light-source-marker { stroke: #211b26; }
+.light-axes { pointer-events: none; fill: none; stroke: #51485a; stroke-width: .5; }
+.light-axes text { fill: #51485a; stroke: none; font-size: 4px; }
+[data-theme="dark"] .light-axes { stroke: #e8dfea; }
+[data-theme="dark"] .light-axes text { fill: #e8dfea; }

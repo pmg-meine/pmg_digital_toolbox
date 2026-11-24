@@ -21,6 +21,7 @@ function open(path: string, base = "/pmg_digital_toolbox/") {
 describe("toolbox routes", () => {
   it("registers all tools with unique slugs and components", () => {
     expect(tools.map((tool) => tool.slug)).toEqual([
+      "lichtausbreitung",
       "lichtquellen-lokalisieren",
       "ohmsches-gesetz",
       "stack-container",
