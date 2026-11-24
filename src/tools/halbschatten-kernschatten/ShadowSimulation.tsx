@@ -20,6 +20,15 @@ export default function ShadowSimulation() {
   const sources = sourceYs.map((y) => ({ x: sourceX, y }));
   const activeSources = sources.filter((_, index) => enabled[index]);
   const segments = beamScreenSegments(sources.flatMap((point, index) => enabled[index] ? [{ point, angle: angles[index] }] : []), brick);
+  const screenDescription = [...segments].reverse().map((segment) => {
+    const illumination = segment.illuminatedBy === 0
+      ? "unbeleuchtet"
+      : `von ${segment.illuminatedBy} ${segment.illuminatedBy === 1 ? "Lampe" : "Lampen"} beleuchtet`;
+    const shadow = activeSources.length === 2 && segment.blockedBy
+      ? (segment.illuminatedBy === 0 ? ", Kernschatten" : ", Halbschatten")
+      : "";
+    return `${(HEIGHT - segment.to).toFixed(1)} bis ${(HEIGHT - segment.from).toFixed(1)} Millimeter: ${illumination}${shadow}`;
+  }).join("; ");
   const brickPosition = { x: brick.x, y: brick.y };
   const brickWidth = brick.width, brickHeight = brick.height;
   const setBrickPosition = (position: Point) => setSetup((current) => ({ ...current, brick: { ...current.brick, ...position } }));
@@ -103,27 +112,30 @@ export default function ShadowSimulation() {
           <span>💡 Taschenlampe {index + 1} einschalten</span>
           <input type="checkbox" role="switch" checked={enabled[index]} onChange={(event) => setEnabled(index, event.target.checked)} />
         </label>)}<label className="light-switch"><span>☀ Randstrahlen anzeigen</span><input type="checkbox" role="switch" checked={showRays} onChange={(event) => setSetup({ ...setup, showRays: event.target.checked })} /></label></div>
-        {sources.map((source, index) => <div className="control-group" key={index}>
-          <label htmlFor={`shadow-source-${index}`}>Taschenlampe {index + 1}: Position Y <strong>{HEIGHT - source.y} mm</strong></label>
+        {sources.map((source, index) => <details className="control-group light-parameter-controls" key={index}>
+          <summary>Taschenlampe {index + 1}</summary>
+          <label htmlFor={`shadow-source-${index}`}>Position Y <strong>{HEIGHT - source.y} mm</strong></label>
           <input id={`shadow-source-${index}`} type="range" min="5" max="205" value={HEIGHT - source.y} onChange={(event) => setSourceY(index, HEIGHT - Number(event.target.value))} />
-        <label htmlFor={`shadow-angle-${index}`}>Öffnungswinkel <strong>{angles[index]}°</strong></label><input id={`shadow-angle-${index}`} type="range" min="10" max="100" value={angles[index]} onChange={(event) => setSetup({ ...setup, angles: angles.map((angle, i) => i === index ? Number(event.target.value) : angle) })} /></div>)}
-        <div className="control-group">
-          <label htmlFor="shadow-brick-x">Klotz: Position X <strong>{brick.x} mm</strong></label>
+          <label htmlFor={`shadow-angle-${index}`}>Öffnungswinkel <strong>{angles[index]}°</strong></label><input id={`shadow-angle-${index}`} type="range" min="10" max="100" value={angles[index]} onChange={(event) => setSetup({ ...setup, angles: angles.map((angle, i) => i === index ? Number(event.target.value) : angle) })} /></details>)}
+        <details className="control-group light-parameter-controls">
+          <summary>Klotz</summary>
+          <label htmlFor="shadow-brick-x">Position X <strong>{brick.x} mm</strong></label>
           <input id="shadow-brick-x" type="range" min="35" max={WIDTH - brickWidth - 10} value={brick.x} onChange={(event) => setBrickPosition({ ...brickPosition, x: Number(event.target.value) })} />
-          <label htmlFor="shadow-brick-y">Klotz: Position Y <strong>{HEIGHT - brick.y - brickHeight / 2} mm</strong></label>
+          <label htmlFor="shadow-brick-y">Position Y <strong>{HEIGHT - brick.y - brickHeight / 2} mm</strong></label>
           <input id="shadow-brick-y" type="range" min={brickHeight / 2} max={HEIGHT - brickHeight / 2} step="0.5" value={HEIGHT - brick.y - brickHeight / 2} onChange={(event) => setBrickPosition({ ...brickPosition, y: HEIGHT - brickHeight / 2 - Number(event.target.value) })} />
-          {(["width", "height"] as const).map((dimension) => <div key={dimension}><label htmlFor={`shadow-${dimension}`}>Klotz: {dimension === "width" ? "Breite" : "Höhe"} <strong>{brick[dimension]} mm</strong></label><input id={`shadow-${dimension}`} type="range" min="5" max={dimension === "width" ? 50 : 150} value={brick[dimension]} onChange={(event) => { const updated = { ...brick, [dimension]: Number(event.target.value) }; updated.x = Math.min(updated.x, WIDTH - updated.width - 10); updated.y = Math.min(updated.y, HEIGHT - updated.height); setSetup({ ...setup, brick: updated }); }} /></div>)}
-        </div>
+          {(["width", "height"] as const).map((dimension) => <div key={dimension}><label htmlFor={`shadow-${dimension}`}>{dimension === "width" ? "Breite" : "Höhe"} <strong>{brick[dimension]} mm</strong></label><input id={`shadow-${dimension}`} type="range" min="5" max={dimension === "width" ? 50 : 150} value={brick[dimension]} onChange={(event) => { const updated = { ...brick, [dimension]: Number(event.target.value) }; updated.x = Math.min(updated.x, WIDTH - updated.width - 10); updated.y = Math.min(updated.y, HEIGHT - updated.height); setSetup({ ...setup, brick: updated }); }} /></div>)}
+        </details>
         <h2>Aufgabenblätter erstellen</h2><div className="control-group"><label htmlFor="shadow-count">Anzahl der Blätter (1–50)</label><div className="light-exercise-actions"><input id="shadow-count" type="number" min="1" max="50" value={exerciseCount} onChange={(event) => setExerciseCount(event.target.value)} /><button className="secondary-button" disabled={!/^\d+$/.test(exerciseCount) || Number(exerciseCount) < 1 || Number(exerciseCount) > 50} onClick={() => createShadowPdf(Array.from({ length: Number(exerciseCount) }, randomSetup), window.location.href).save("schatten-aufgaben.pdf")}>PDF erzeugen</button></div></div>
       </div>
       <div className="sim-display"><div className="chart-card light-scene">
         <h2>Versuch auf DIN A4</h2>
         <p>Vermute zuerst, wo Kernschatten und Halbschatten auf dem Schirm entstehen. Schalte dann die Taschenlampen einzeln und gemeinsam ein.</p>
+        <p className="light-share-message" role="status">{message}</p>
         <div className="shadow-canvas"><div className="light-scene-actions shadow-actions">
           <button className="secondary-button light-icon-button" onClick={exportPng} aria-label="Aufbau als PNG speichern" title="Aufbau als PNG speichern"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3" /></svg></button>
           <button className="secondary-button light-icon-button" onClick={() => createShadowPdf([setup], window.location.href).save("schatten-versuchsaufbau.pdf")} aria-label="Aufbau als PDF speichern" title="Aufbau als PDF speichern"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3" /></svg></button>
           <button className="secondary-button light-icon-button" onClick={shareScene} aria-label="Link kopieren" title="Link kopieren"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7l-1.6 1.6M14 11a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 0 0 5.7 5.7l1.6-1.6" /></svg></button>
-        </div><svg ref={svgRef} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} role="img" aria-label={`Versuchsaufbau mit zwei Taschenlampen und einem Klotz. ${activeSources.length} von 2 Taschenlampen eingeschaltet. Die Bereiche auf dem Schirm sind unter der Abbildung beschrieben.`}>
+        </div><svg ref={svgRef} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} role="img" aria-label={`Versuchsaufbau mit zwei Taschenlampen und einem Klotz. ${activeSources.length} von 2 Taschenlampen eingeschaltet. ${activeSources.length > 0 ? `Schirm von unten nach oben: ${screenDescription}.` : ""}}`}>
           <defs><pattern id="shadow-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern></defs>
           <rect width={WIDTH} height={HEIGHT} className="light-paper" /><rect width={WIDTH} height={HEIGHT} fill="url(#shadow-grid)" />
           {sources.map((source, index) => enabled[index] && <polygon key={index} points={lightPolygon(source, angles[index], [brick]).map((point) => `${point.x},${point.y}`).join(" ")} className="shadow-beam" />)}
@@ -132,12 +144,12 @@ export default function ShadowSimulation() {
           <line x1={WIDTH} y1="0" x2={WIDTH} y2={HEIGHT} className="light-screen" />
           {activeSources.length > 0 && segments.map((segment, index) => <line key={index} x1={WIDTH} y1={segment.from} x2={WIDTH} y2={segment.to} className={`shadow-screen-${segment.illuminatedBy}`} />)}
           {activeSources.length === 2 && segments.map((segment, index) => segment.blockedBy && segment.to - segment.from > 3 ? <text key={index} x={WIDTH - 3} y={(segment.from + segment.to) / 2} textAnchor="end" className="shadow-region-label">{segment.illuminatedBy === 0 ? "Kernschatten" : "Halbschatten"}</text> : null)}
+          <g className="light-axes" aria-hidden="true">
+            <path d="M 9 200 H 21 M 18 197 L 21 200 L 18 203 M 9 200 V 188 M 6 191 L 9 188 L 12 191" />
+            <text x="23" y="201">x</text><text x="8" y="186">y</text>
+          </g>
           {sources.map((source, index) => <g key={index}><rect x="0" y={source.y - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, index, source)} /><text x="4.5" y={source.y + 1.5} textAnchor="middle" className="shadow-source-label" pointerEvents="none">{index + 1}</text></g>)}
-        </svg></div><p className="light-share-message" role="status">{message}</p>
-        <p className="sim-caption">Die PDF zeigt den unbeleuchteten Aufbau zum Einzeichnen der Vermutung.</p>
-        <p className="sim-caption">Taschenlampen und Klotz ziehen oder mit den Reglern bewegen · Schirm rechts · Y-Positionen von unten gemessen</p>
-        {activeSources.length === 0 ? <p>Schalte eine Taschenlampe ein, um die Projektion zu sehen.</p> : <div aria-live="polite"><p>Schirm von unten nach oben (Position in mm):</p><ul>{[...segments].reverse().map((segment, index) => <li key={index}>{(HEIGHT - segment.to).toFixed(1)}–{(HEIGHT - segment.from).toFixed(1)}: {segment.illuminatedBy === 0 ? "unbeleuchtet" : `von ${segment.illuminatedBy} ${segment.illuminatedBy === 1 ? "Lampe" : "Lampen"} beleuchtet`}{activeSources.length === 2 && !!segment.blockedBy && (segment.illuminatedBy === 0 ? " (Kernschatten)" : " (Halbschatten)")}</li>)}</ul></div>}
-        <p className="sim-caption">Kernschatten: Keine der beiden Lampen erreicht den Schirm. Halbschatten: Nur eine Lampe erreicht ihn.</p>
+        </svg></div>
       </div></div>
     </div>
   </div>;

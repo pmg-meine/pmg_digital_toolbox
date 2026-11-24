@@ -10,5 +10,5 @@
 [data-theme="dark"] .shadow-source-label { fill: #211b26; }
 .shadow-canvas { position: relative; }
 .shadow-canvas > svg { display: block; width: 100%; height: auto; }
-.shadow-actions { position: absolute; top: 8px; right: 8px; z-index: 1; }
+.shadow-actions { position: absolute; top: 16px; right: 16px; z-index: 1; }
 .shadow-region-label { fill: #28202f; font-size: 4px; font-weight: bold; paint-order: stroke; stroke: white; stroke-width: 1px; stroke-linejoin: round; pointer-events: none; }

@@ -1,7 +1,7 @@
 import { HEIGHT, WIDTH, type Brick } from "../lichtausbreitung/geometry";
 
 export type ShadowSetup = { sourceYs: number[]; angles: number[]; brick: Brick; enabled: boolean[]; showRays: boolean };
-export const defaultSetup: ShadowSetup = { sourceYs: [65, 145], angles: [60, 60], brick: { x: 145, y: 82.5, width: 8, height: 45 }, enabled: [false, false], showRays: false };
+export const defaultSetup: ShadowSetup = { sourceYs: [65, 145], angles: [60, 60], brick: { x: 136, y: 92.5, width: 25, height: 25 }, enabled: [false, false], showRays: false };
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 export function readSetup(search: string): ShadowSetup {
@@ -9,14 +9,14 @@ export function readSetup(search: string): ShadowSetup {
   const number = (key: string, fallback: number, min: number, max: number) => {
     const raw = params.get(key);
     const value = raw === null || raw.trim() === "" ? NaN : Number(raw);
-    return Number.isFinite(value) ? clamp(value, min, max) : fallback;
+    return clamp(Number.isFinite(value) ? value : fallback, min, max);
   };
-  const width = number("width", 8, 5, 50);
-  const height = number("height", 45, 5, 150);
+  const width = number("width", defaultSetup.brick.width, 5, 50);
+  const height = number("height", defaultSetup.brick.height, 5, 150);
   return {
     sourceYs: [number("y1", 65, 5, 205), number("y2", 145, 5, 205)],
     angles: [number("angle1", 60, 10, 100), number("angle2", 60, 10, 100)],
-    brick: { x: number("x", 145, 35, WIDTH - width - 10), y: number("y", 82.5, 0, HEIGHT - height), width, height },
+    brick: { x: number("x", defaultSetup.brick.x, 35, WIDTH - width - 10), y: number("y", defaultSetup.brick.y, 0, HEIGHT - height), width, height },
     enabled: [params.get("light1") === "1", params.get("light2") === "1"],
     showRays: params.get("rays") === "1",
   };
