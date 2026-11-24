@@ -17,3 +17,11 @@
 [data-theme="dark"] .light-screen { stroke: #c0b5c8; }
 [data-theme="dark"] .light-screen-result { stroke: #ff82c0; }
 [data-theme="dark"] .light-source { fill: #e8dfea; }
+
+.light-brick-group { cursor: grab; touch-action: none; }
+.light-brick-group:active { cursor: grabbing; }
+.light-brick-marker { pointer-events: none; stroke: #29232c; stroke-width: .4; }
+.light-brick-marker text { fill: #29232c; stroke: none; font-size: 4px; font-weight: bold; }
+.light-brick-controls summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
+[data-theme="dark"] .light-brick-marker { stroke: #211b26; }
+[data-theme="dark"] .light-brick-marker text { fill: #211b26; }

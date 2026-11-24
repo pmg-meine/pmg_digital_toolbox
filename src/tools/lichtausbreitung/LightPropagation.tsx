@@ -95,15 +95,16 @@ export default function LightPropagation() {
           <div className="control-group"><label htmlFor="light-angle">Öffnungswinkel <strong>{angle}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></div>
           {brickParameters.map((brick, index) => {
             const bounds = brickCenterBounds(brickParameters, index);
-            const name = `Stein ${Math.floor(index / 2) + 1} ${index % 2 === 0 ? "oben" : "unten"}`;
-            return <div className="control-group" key={index}>
+            const name = `Klotz ${String.fromCharCode(65 + index)}`;
+            return <details className="control-group light-brick-controls" key={index}>
+              <summary>{name}</summary>
               <label htmlFor={`brick-${index}`}>{name}, Mitte von oben <strong>{brick.centerY} mm</strong></label>
               <input id={`brick-${index}`} type="range" min={bounds.min} max={bounds.max} step="0.5" value={brick.centerY} onChange={(event) => updateBrick(index, { centerY: Number(event.target.value) })} />
               <label htmlFor={`brick-width-${index}`}>{name}, Breite <strong>{brick.width} mm</strong></label>
               <input id={`brick-width-${index}`} type="range" min={minimumBrickSize} max={maximumBrickWidth} value={brick.width} onChange={(event) => updateBrick(index, { width: Number(event.target.value) })} />
               <label htmlFor={`brick-height-${index}`}>{name}, Höhe <strong>{brick.height} mm</strong></label>
               <input id={`brick-height-${index}`} type="range" min={minimumBrickSize} max={maximumBrickHeight} value={brick.height} onChange={(event) => updateBrick(index, { height: Number(event.target.value) })} />
-            </div>;
+            </details>;
           })}
           <div className="control-group"><label><input type="checkbox" checked={showRays} onChange={(event) => setShowRays(event.target.checked)} /> Randstrahlen anzeigen</label></div>
           <div className="button-line">
@@ -123,18 +124,29 @@ export default function LightPropagation() {
         <div className="sim-display">
           <div className="chart-card light-scene">
             <h2>Versuch auf DIN A4</h2>
-            <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${sourceY} Millimetern, Öffnungswinkel ${angle} Grad und vier Steinen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
+            <svg ref={svgRef} onPointerMove={moveDrag} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} viewBox={`-4 -4 ${WIDTH + 8} ${HEIGHT + 8}`} role="img" aria-label={`Versuchsaufbau mit Lichtquelle bei ${sourceY} Millimetern, Öffnungswinkel ${angle} Grad und vier Klötzen. Licht ${lightOn ? "eingeschaltet" : "ausgeschaltet"}.`}>
               <defs><pattern id="light-grid" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" className="light-grid-line" /></pattern><clipPath id="light-paper-clip"><rect width={WIDTH} height={HEIGHT} /></clipPath></defs>
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="light-paper" />
               <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#light-grid)" />
               {lightOn && <polygon points={points} className="light-beam" />}
               {lightOn && showRays && polygon.slice(1).map((point, index) => <line key={index} x1={source.x} y1={source.y} x2={point.x} y2={point.y} className="light-ray" />)}
-              <g clipPath="url(#light-paper-clip)">{bricks.map((brick, index) => <rect key={index} {...brick} className="light-brick" onPointerDown={(event) => startDrag(event, index, brickParameters[index].centerY)} />)}</g>
+              <g clipPath="url(#light-paper-clip)">{bricks.map((brick, index) => {
+                const centerX = brick.x + brick.width / 2;
+                const centerY = brick.y + brick.height / 2;
+                return <g key={index} onPointerDown={(event) => startDrag(event, index, centerY)} className="light-brick-group">
+                  <rect {...brick} className="light-brick" />
+                  <g className="light-brick-marker" aria-hidden="true">
+                    <line x1={centerX - 2} y1={centerY} x2={centerX + 2} y2={centerY} />
+                    <line x1={centerX} y1={centerY - 2} x2={centerX} y2={centerY + 2} />
+                    <text x={centerX + 3} y={Math.max(4, Math.min(HEIGHT - 1, centerY - 3))}>{String.fromCharCode(65 + index)}</text>
+                  </g>
+                </g>;
+              })}</g>
               <line x1={WIDTH} y1="0" x2={WIDTH} y2={HEIGHT} className="light-screen" />
               {lightOn && screenSegments.map((segment, index) => <line key={index} x1={WIDTH} y1={segment.from} x2={WIDTH} y2={segment.to} className="light-screen-result" />)}
               <rect x="0" y={sourceY - 5} width="9" height="10" className="light-source" onPointerDown={(event) => startDrag(event, -1, sourceY)} />
             </svg>
-            <p className="sim-caption">Lichtquelle und Steine ziehen oder mit den Reglern bewegen · Schirm rechts · Steinmitten von der oberen Blattkante gemessen</p>
+            <p className="sim-caption">Lichtquelle und Klötze ziehen oder mit den Reglern bewegen · Schirm rechts · Klotzmitten von der oberen Blattkante gemessen</p>
             <p className="sim-caption">Die PDF-Datei zeigt den Aufbau ohne Licht und ist im A4-Querformat druckfertig. QR-Code und Link öffnen denselben Aufbau mit ausgeschaltetem Licht.</p>
           </div>
         </div>

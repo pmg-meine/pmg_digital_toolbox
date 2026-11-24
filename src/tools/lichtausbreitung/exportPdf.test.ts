@@ -15,7 +15,7 @@ describe("printable light setup", () => {
     expect(output).toContain(url);
     expect(output).toContain("Klicke hier oder scanne den QR-Code");
     expect(output).toContain("Lichtquelle y=105");
-    expect(output).toContain("Stein 1: Mitte y=47.5, Breite=8, Höhe=95 mm");
+    expect(output).toContain("Klotz A: Mitte y=47.5, Breite=8, Höhe=95 mm");
     expect(output).not.toContain(`(${url}) Tj`);
   });
 
