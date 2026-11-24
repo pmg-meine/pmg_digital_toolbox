@@ -115,12 +115,11 @@ export default function LightPropagation() {
           <details className="control-group light-parameter-controls"><summary>Taschenlampe</summary><label htmlFor="light-source">Position Y <strong>{(HEIGHT - sourceY).toFixed(1)} mm</strong></label><input id="light-source" type="range" min="5" max="205" value={HEIGHT - sourceY} onChange={(event) => setSourceY(HEIGHT - Number(event.target.value))} />
           <label htmlFor="light-angle">Öffnungswinkel <strong>{angle.toFixed(1)}°</strong></label><input id="light-angle" type="range" min="10" max="100" value={angle} onChange={(event) => setAngle(Number(event.target.value))} /></details>
           {brickParameters.map((brick, index) => {
-            const bounds = brickCenterBounds(brickParameters, index);
             const name = `Klotz ${String.fromCharCode(65 + index)}`;
             return <details className="control-group light-parameter-controls" key={index}>
               <summary>{name}</summary>
               <label htmlFor={`brick-${index}`}>Position Y <strong>{(HEIGHT - brick.centerY).toFixed(1)} mm</strong></label>
-              <input id={`brick-${index}`} type="range" min={HEIGHT - bounds.max} max={HEIGHT - bounds.min} step="0.5" value={HEIGHT - brick.centerY} onChange={(event) => updateBrick(index, { centerY: HEIGHT - Number(event.target.value) })} />
+              <input id={`brick-${index}`} type="range" min={1 - brick.height / 2} max={HEIGHT - 1 + brick.height / 2} step="0.5" value={HEIGHT - brick.centerY} onChange={(event) => updateBrick(index, { centerY: HEIGHT - Number(event.target.value) })} />
               <label htmlFor={`brick-width-${index}`}>Breite <strong>{brick.width.toFixed(1)} mm</strong></label>
               <input id={`brick-width-${index}`} type="range" min={minimumBrickSize} max={maximumBrickWidth} value={brick.width} onChange={(event) => updateBrick(index, { width: Number(event.target.value) })} />
               <label htmlFor={`brick-height-${index}`}>Höhe <strong>{brick.height.toFixed(1)} mm</strong></label>
