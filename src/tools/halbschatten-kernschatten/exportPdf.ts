@@ -28,7 +28,7 @@ export function createShadowPdf(setups: ShadowSetup[], baseUrl: string): jsPDF {
       if (qr.modules.get(row, col)) pdf.rect(263 + (col + 4) * moduleSize, 175 + (row + 4) * moduleSize, moduleSize, moduleSize, "F");
     }
     pdf.setTextColor(0, 0, 180); pdf.setFontSize(10);
-    pdf.textWithLink("Aufbau öffnen und Licht einschalten", 15, 180, { url });
+    pdf.textWithLink("Lösung: Klicke hier oder scanne den QR-Code und schalte die Lichter ein.", 15, 180, { url });
     pdf.setTextColor(40, 32, 47); pdf.setFontSize(9);
     pdf.text(`Öffnungswinkel: Lampe 1: ${setup.angles[0]}°, Lampe 2: ${setup.angles[1]}°`, 15, 187);
     pdf.text("Zeichne deine Vermutung für Kern- und Halbschatten ein.", 15, 194);
