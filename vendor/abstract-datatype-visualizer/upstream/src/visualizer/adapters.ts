@@ -1,5 +1,5 @@
 import type {Snapshot, Value, HeapObject} from './runtime';
-export interface Container {object:HeapObject; kind?:'stack'; elements:Value[]; storage?:HeapObject; nodes?:HeapObject[]; size:number; capacity?:number; warnings:string[]}
+export interface Container {object:HeapObject; kind?:'stack'|'queue'; elements:Value[]; storage?:HeapObject; nodes?:HeapObject[]; size:number; capacity?:number; warnings:string[]}
 export interface Adapter {name:string; extract(snapshot:Snapshot,object:HeapObject):Container|undefined}
 export function arrayAdapter(type:string,arrayField:string,sizeField?:string):Adapter {
  return {name:type,extract(snapshot,object){
@@ -72,4 +72,32 @@ export const linkedStack:Adapter={name:'Stapel (NRW)',extract(snapshot,object){
   link=node.fields.nextNode;
  }
  return {object,kind:'stack',elements,nodes,size:elements.length,warnings};
+}};
+
+/** Read the NRW queue in FIFO order, retaining a detached tail if present. */
+export const linkedQueue:Adapter={name:'Schlange (NRW)',extract(snapshot,object){
+ if(!['Schlange','Queue'].includes(object.type)||!('head' in object.fields)||!('tail' in object.fields))return;
+ const warnings:string[]=[],elements:Value[]=[],nodes:HeapObject[]=[];
+ const seen=new Set<string>();
+ let link=object.fields.head;
+ while(link!==null){
+  if(!link||typeof link!=='object'||!('ref' in link)){warnings.push('Ungültige Knotenreferenz.');break;}
+  if(seen.has(link.ref)){warnings.push(`Zyklus bei @${link.ref}.`);break;}
+  seen.add(link.ref);
+  const node=snapshot.heap[link.ref];
+  if(!node){warnings.push(`Knoten @${link.ref} nicht im begrenzten Snapshot enthalten.`);break;}
+  nodes.push(node);
+  elements.push(node.fields.content===undefined?{unavailable:'Feld content fehlt'}:node.fields.content);
+  link=node.fields.nextNode;
+ }
+ const tail=object.fields.tail;
+ const last=nodes.at(-1)?.id;
+ if(last ? !(tail&&typeof tail==='object'&&'ref' in tail&&tail.ref===last) : tail!==null){
+  warnings.push('tail stimmt nicht mit dem Ende der head-Kette überein.');
+ }
+ if(tail&&typeof tail==='object'&&'ref' in tail&&!seen.has(tail.ref)){
+  const node=snapshot.heap[tail.ref];
+  if(node)nodes.push(node);
+ }
+ return {object,kind:'queue',elements,nodes,size:elements.length,warnings};
 }};
