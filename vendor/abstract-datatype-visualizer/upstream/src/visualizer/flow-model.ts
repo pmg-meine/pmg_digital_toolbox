@@ -53,7 +53,7 @@ export function buildDiagram(container: Container, snapshot: Snapshot, previous:
       const identity = container.nodes?.[index]?.id ?? key(value);
       const occurrence = occurrences.get(identity) ?? 0;
       occurrences.set(identity, occurrence + 1);
-      node(`item:${container.object.id}:${identity}:${occurrence}`, container.kind === 'stack' ? (index === 0 ? 'top · [0]' : `[${index}]`) : `[${index}]`, [{ name: 'Inhalt', value, text: valueLabel(value, snapshot), changed: false, reference: false }],
+      node(`item:${container.object.id}:${identity}:${occurrence}`, container.kind === 'stack' ? (index === 0 ? 'top · [0]' : `[${index}]`) : container.kind === 'queue' ? `${index === 0 ? 'head · ' : ''}${index === container.elements.length - 1 ? 'tail · ' : ''}[${index}]` : `[${index}]`, [{ name: 'Inhalt', value, text: valueLabel(value, snapshot), changed: false, reference: false }],
         container.kind === 'stack' ? 0 : index * 270, container.kind === 'stack' ? index * 150 : 0, delta.changes[index].kind);
     });
     return { nodes, edges };
@@ -81,7 +81,7 @@ export function buildDiagram(container: Container, snapshot: Snapshot, previous:
           markerEnd: { type: MarkerType.ArrowClosed, color: changed ? '#eabb61' : '#67dbc8' } });
       }
     };
-    connect(container.object.id, container.object.fields, ['first', 'last', 'current', 'head']);
+    connect(container.object.id, container.object.fields, ['first', 'last', 'current', 'head', 'tail']);
     for (const object of container.nodes) connect(object.id, object.fields, ['next', 'nextNode']);
   } else if (container.storage) {
     const storage = container.storage;

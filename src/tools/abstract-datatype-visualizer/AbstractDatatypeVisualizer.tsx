@@ -4,7 +4,7 @@ export default function AbstractDatatypeVisualizer() {
   return (
     <div className="sim-content datatype-content">
       <p>
-        Untersuche DynArray und Stapel mit Java und verfolge ihre Zustände im
+        Untersuche DynArray, Stapel und Schlange mit Java und verfolge ihre Zustände im
         Debugger. Die Anwendung läuft direkt im Browser.
       </p>
       <p>

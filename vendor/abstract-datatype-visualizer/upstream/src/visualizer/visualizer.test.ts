@@ -289,3 +289,29 @@ describe('expandable object attributes', () => {
   expect(valueLabel({ ref: 'boxed' }, s)).toBe('5 · @boxed');
  });
 });
+
+import {linkedQueue} from './adapters';
+describe('NRW queue', () => {
+ it('shows FIFO order and both pointers in the diagrams', () => {
+  const s:any={heap:{q:{id:'q',type:'Schlange',fields:{head:{ref:'a'},tail:{ref:'b'}}},a:{id:'a',type:'QueueNode',fields:{content:'Anna',nextNode:{ref:'b'}}},b:{id:'b',type:'QueueNode',fields:{content:'Ben',nextNode:null}}}};
+  const c=linkedQueue.extract(s,s.heap.q)!;
+  expect(c.elements).toEqual(['Anna','Ben']);
+  expect(c.warnings).toEqual([]);
+  const abstract=buildDiagram(c,s,undefined,undefined,'abstract');
+  expect(abstract.nodes.map(n=>n.data.title)).toEqual(['head · [0]','tail · [1]']);
+  expect(buildDiagram(c,s,undefined,undefined,'implementation').edges.map(e=>e.label)).toEqual(['head','tail','nextNode']);
+  s.heap.q.fields.head={ref:'b'};
+  expect(linkedQueue.extract(s,s.heap.q)?.elements).toEqual(['Ben']);
+  s.heap.q.fields={head:null,tail:null};
+  expect(linkedQueue.extract(s,s.heap.q)).toMatchObject({elements:[],nodes:[],warnings:[]});
+ });
+ it('handles cycles, missing nodes, and a detached tail', () => {
+  const s:any={heap:{q:{id:'q',type:'Queue',fields:{head:{ref:'a'},tail:{ref:'b'}}},a:{id:'a',type:'QueueNode',fields:{content:'Anna',nextNode:{ref:'a'}}},b:{id:'b',type:'QueueNode',fields:{content:'Ben',nextNode:null}}}};
+  const c=linkedQueue.extract(s,s.heap.q)!;
+  expect(c.warnings.join()).toContain('Zyklus');
+  expect(c.warnings.join()).toContain('tail stimmt nicht');
+  expect(c.nodes?.map(n=>n.id)).toEqual(['a','b']);
+  delete s.heap.a;
+  expect(linkedQueue.extract(s,s.heap.q)?.warnings.join()).toContain('nicht im begrenzten Snapshot');
+ });
+});
