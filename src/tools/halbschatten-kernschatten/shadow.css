@@ -1,0 +1,15 @@
+.shadow-beam { fill: #f6c8df; fill-opacity: .45; pointer-events: none; }
+.shadow-screen-0 { stroke: #40352d; stroke-width: 3; }
+.shadow-screen-1 { stroke: #bd347a; stroke-width: 3; }
+.shadow-screen-2 { stroke: #f6c8df; stroke-width: 3; }
+.shadow-source-label { fill: white; font-size: 4px; font-weight: bold; }
+[data-theme="dark"] .shadow-beam { fill-opacity: .3; }
+[data-theme="dark"] .shadow-screen-0 { stroke: #aaa3ad; }
+[data-theme="dark"] .shadow-screen-1 { stroke: #ff82c0; }
+[data-theme="dark"] .shadow-screen-2 { stroke: #ffe4f2; }
+[data-theme="dark"] .shadow-source-label { fill: #211b26; }
+.shadow-canvas { position: relative; }
+.shadow-random-button { width: 100%; margin-bottom: 23px; }
+.shadow-canvas > svg { display: block; width: 100%; height: auto; }
+.shadow-actions { position: absolute; top: 16px; right: 16px; z-index: 1; }
+.shadow-region-label { fill: #28202f; font-size: 4px; font-weight: bold; paint-order: stroke; stroke: white; stroke-width: 1px; stroke-linejoin: round; pointer-events: none; }
